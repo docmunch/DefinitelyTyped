@@ -268,16 +268,14 @@ declare module _ {
 		**/
 		findIndex<T>(
 			array: List<T>,
-			pluckValue: string,
-			thisArg?: any): number;
+			pluckValue: string): number;
 		
 		/**
 		* @see _.findIndex
 		**/
-		findIndex<T>(
+		findIndex<W, T extends W>(
 			array: List<T>,
-			whereDictionary: Dictionary<any>,
-			thisArg?: any): number;
+			whereDictionary: W): number;
 	}
 
 	//_.findLastIndex
@@ -448,21 +446,66 @@ declare module _ {
 		* @param shallow If true then only flatten one level, optional, default = false.
 		* @return `array` flattened.
 		**/
+		flatten<T>(array: List<any>, isShallow?: boolean): T[]
+
 		flatten<T>(
-			array: List<T>,
-			isShallow?: boolean,
-			callback?: ListIterator<T, any>,
-			thisArg?: any): any[];			
+			array: List<any>,
+			isShallow: boolean,
+			callback: ListIterator<any, T>,
+			thisArg?: any): T[];			
+
+		flatten<T>(
+			array: List<any>,
+			callback: ListIterator<any, T>,
+			thisArg?: any): T[];			
+
+		flatten<W, T extends W>(
+			array: List<any>,
+			isShallow: boolean,
+			whereValue: W): T[];			
+
+		flatten<W, T extends W>(
+			array: List<any>,
+			whereValue: W): T[];			
+
+		flatten<T>(
+			array: List<any>,
+			isShallow: boolean,
+			pluckValue: string): T[];			
+
+		flatten<T>(
+			array: List<any>,
+			pluckValue: string): T[];			
 	}
 
 	interface LoDashArrayWrapper<T> {
 		/**
 		* @see _.flatten
 		**/
-		flatten(
-			isShallow?: boolean,
-			callback?: ListIterator<T, any>,
-			thisArg?: any): LoDashArrayWrapper<any>;
+        flatten<Flat>(isShallow?: boolean): LoDashArrayWrapper<Flat>;
+
+        flatten<Flat>(
+			isShallow: boolean,
+			callback: ListIterator<T, Flat>,
+			thisArg?: any): LoDashArrayWrapper<Flat>;
+
+        flatten<Flat>(
+			callback: ListIterator<T, Flat>,
+			thisArg?: any): LoDashArrayWrapper<Flat>;
+
+        flatten<Flat>(
+			isShallow: boolean,
+			pluckValue: string): LoDashArrayWrapper<Flat>;
+
+        flatten<Flat>(
+			pluckValue: string): LoDashArrayWrapper<Flat>;
+
+        flatten<Flat, W extends Flat>(
+			isShallow: boolean,
+			whereValue: W): LoDashArrayWrapper<Flat>;
+
+        flatten<Flat, W extends Flat>(
+			whereValue: W): LoDashArrayWrapper<Flat>;
 	}
 
 	//_.indexOf
@@ -730,9 +773,14 @@ declare module _ {
 		* @param {*} [thisArg] The this binding of callback.
 		* @return Returns a slice of array.
 		**/
+		rest<T>(array: List<T>): T[];
+
+		/**
+		* @see _.rest
+		**/
 		rest<T>(
 			array: List<T>,
-			callback: (num: number) => boolean,
+            callback: ListIterator<T, boolean>,
 			thisArg?: any): T[];
 
 		/**
@@ -740,88 +788,89 @@ declare module _ {
 		**/
 		rest<T>(
 			array: List<T>,
-			n?: number,
-			thisArg?: any): T[];
+			n: number): T[];
 		
 		/**
 		* @see _.rest
 		**/
 		rest<T>(
 			array: List<T>,
-			pluckValue: string,
-			thisArg?: any): T[];
+			pluckValue: string): T[];
 		
 		/**
 		* @see _.rest
 		**/
-		rest<W, T extends W>(
+        rest<W, T extends W>(
 			array: List<T>,
-			whereValue: W,
-			thisArg?: any): T[];
+			whereValue: W): T[];
 
-			/**
-			* @see _.rest
-			**/
-			drop<T>(
-				array: List<T>,
-				callback: (num: number) => boolean,
-				thisArg?: any): T[];
-			
-			/**
-			* @see _.rest
-			**/
-			drop<T>(
-				array: List<T>,
-				n?: number,
-				thisArg?: any): T[];
-			
-			/**
-			* @see _.rest
-			**/
-			drop<T>(
-				array: List<T>,
-				pluckValue: string,
-				thisArg?: any): T[];
-			
-			/**
-			* @see _.rest
-			**/
-			drop<W, T extends W>(
-				array: List<T>,
-				whereValue: W,
-				thisArg?: any): T[];
+            /**
+            * @see _.rest
+            **/
+            drop<T>(array: List<T>): T[];
 
-			/**
-			* @see _.rest
-			**/
-			tail<T>(
-				array: List<T>,
-				callback: (num: number) => boolean,
-				thisArg?: any): T[];
-			
-			/**
-			* @see _.rest
-			**/
-			tail<T>(
-				array: List<T>,
-				n?: number,
-				thisArg?: any): T[];
-			
-			/**
-			* @see _.rest
-			**/
-			tail<T>(
-				array: List<T>,
-				pluckValue: string,
-				thisArg?: any): T[];
-			
-			/**
-			* @see _.rest
-			**/
-			tail<W, T extends W>(
-				array: List<T>,
-				whereValue: W,
-				thisArg?: any): T[];
+            /**
+            * @see _.rest
+            **/
+            drop<T>(
+                array: List<T>,
+                callback: ListIterator<T, boolean>,
+                thisArg?: any): T[];
+
+            /**
+            * @see _.rest
+            **/
+            drop<T>(
+                array: List<T>,
+                n: number): T[];
+            
+            /**
+            * @see _.rest
+            **/
+            drop<T>(
+                array: List<T>,
+                pluckValue: string): T[];
+            
+            /**
+            * @see _.rest
+            **/
+            drop<W, T extends W>(
+                array: List<T>,
+                whereValue: W): T[];
+
+                /**
+                * @see _.rest
+                **/
+                tail<T>(array: List<T>): T[];
+
+                /**
+                * @see _.rest
+                **/
+                tail<T>(
+                    array: List<T>,
+                    callback: ListIterator<T, boolean>,
+                    thisArg?: any): T[];
+
+                /**
+                * @see _.rest
+                **/
+                tail<T>(
+                    array: List<T>,
+                    n: number): T[];
+                
+                /**
+                * @see _.rest
+                **/
+                tail<T>(
+                    array: List<T>,
+                    pluckValue: string): T[];
+                
+                /**
+                * @see _.rest
+                **/
+                tail<W, T extends W>(
+                    array: List<T>,
+                    whereValue: W): T[];
 	}
 
 	//_.sortedIndex
@@ -898,10 +947,12 @@ declare module _ {
 		* @param context 'this' object in `iterator`, optional.
 		* @return Copy of `array` where all elements are unique.
 		**/
+		uniq<T, TSort>(array: List<T>, isSorted?: boolean): T[];
+
 		uniq<T, TSort>(
 			array: List<T>,
-			isSorted?: boolean,
-			callback?: ListIterator<T, TSort>,
+			isSorted: boolean,
+			callback: ListIterator<T, TSort>,
 			thisArg?: any): T[];
 
 		/**
@@ -909,7 +960,7 @@ declare module _ {
 		**/
 		uniq<T, TSort>(
 			array: List<T>,
-			callback?: ListIterator<T, TSort>,
+			callback: ListIterator<T, TSort>,
 			thisArg?: any): T[];
 
 		/**
@@ -918,8 +969,12 @@ declare module _ {
 		**/
 		uniq<T>(
 			array: List<T>,
-			isSorted?: boolean,
-			pluckValue?: string): T[];
+			isSorted: boolean,
+			pluckValue: string): T[];
+
+		uniq<T>(
+			array: List<T>,
+			pluckValue: string): T[];
 
 		/**
 		* @see _.uniq
@@ -927,14 +982,21 @@ declare module _ {
 		**/
 		uniq<W, T extends W>(
 			array: List<T>,
-			whereValue?: W): T[];
+			isSorted: boolean,
+			whereValue: W): T[];
+
+		uniq<W, T extends W>(
+			array: List<T>,
+			whereValue: W): T[];
 
 			/**
 			* @see _.uniq
 			**/
+			unique<T>(array: List<T>, isSorted?: boolean): T[];
+
 			unique<T, TSort>(
 				array: List<T>,
-				callback?: ListIterator<T, TSort>,
+				callback: ListIterator<T, TSort>,
 				thisArg?: any): T[];
 
 			/**
@@ -942,8 +1004,8 @@ declare module _ {
 			**/
 			unique<T, TSort>(
 				array: List<T>,
-				isSorted?: boolean,
-				callback?: ListIterator<T, TSort>,
+				isSorted: boolean,
+				callback: ListIterator<T, TSort>,
 				thisArg?: any): T[];
 
 			/**
@@ -952,8 +1014,12 @@ declare module _ {
 			**/
 			unique<T>(
 				array: List<T>,
-				isSorted?: boolean,
-				pluckValue?: string): T[];
+				isSorted: boolean,
+				pluckValue: string): T[];
+
+			unique<T>(
+				array: List<T>,
+				pluckValue: string): T[];
 
 			/**
 			* @see _.uniq
@@ -961,6 +1027,11 @@ declare module _ {
 			**/
 			unique<W, T extends W>(
 				array: List<T>,
+				whereValue?: W): T[];
+
+			unique<W, T extends W>(
+				array: List<T>,
+				isSorted: boolean,
 				whereValue?: W): T[];
 	}
 
@@ -1851,6 +1922,14 @@ declare module _ {
 			accumulator?: TResult,
 			thisArg?: any): TResult;
 
+        /**
+        * @see _.reduce
+        **/
+		reduce<T, TResult>(
+			collection: Collection<T>,
+			callback: MemoIterator<T, TResult>,
+			thisArg?: any): TResult;
+
 			/**
 			* @see _.reduce
 			**/
@@ -1863,10 +1942,26 @@ declare module _ {
 			/**
 			* @see _.reduce
 			**/
+			inject<T, TResult>(
+				collection: Collection<T>,
+				callback: MemoIterator<T, TResult>,
+				thisArg?: any): TResult;
+
+			/**
+			* @see _.reduce
+			**/
 			foldl<T, TResult>(
 				collection: Collection<T>,
 				callback: MemoIterator<T, TResult>,
 				accumulator?: TResult,
+				thisArg?: any): TResult;
+
+			/**
+			* @see _.reduce
+			**/
+			foldl<T, TResult>(
+				collection: Collection<T>,
+				callback: MemoIterator<T, TResult>,
 				thisArg?: any): TResult;
 	}
 
@@ -1887,6 +1982,14 @@ declare module _ {
 			accumulator?: TResult,
 			thisArg?: any): TResult;
 
+        /**
+        * @see _.reduceRight
+        **/
+		reduceRight<T, TResult>(
+			collection: Collection<T>,
+			callback: MemoIterator<T, TResult>,
+			thisArg?: any): TResult;
+
 			/**
 			* @see _.reduceRight
 			**/
@@ -1894,6 +1997,14 @@ declare module _ {
 				collection: Collection<T>,
 				callback: MemoIterator<T, TResult>,
 				accumulator?: TResult,
+				thisArg?: any): TResult;
+
+			/**
+			* @see _.reduceRight
+			**/
+			foldr<T, TResult>(
+				collection: Collection<T>,
+				callback: MemoIterator<T, TResult>,
 				thisArg?: any): TResult;
 	}
 
@@ -3555,6 +3666,14 @@ declare module _ {
 			collection: Collection<T>,
 			callback?: MemoIterator<T, any>,
 			accumulator?: any,
+			thisArg?: any): any;
+
+		/**
+		* @see _.transform
+		**/
+		transform<T>(
+			collection: Collection<T>,
+			callback?: MemoIterator<T, any>,
 			thisArg?: any): any;
 	}
 
