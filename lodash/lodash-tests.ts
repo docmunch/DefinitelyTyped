@@ -423,8 +423,8 @@ result = <any>_.reduce({ 'a': 1, 'b': 2, 'c': 3 }, function(result, num, key) {
 	  return result;
 	}, {});
 
-result = <any>_.reduceRight([[0, 1], [2, 3], [4, 5]], function(a, b) { return a.concat(b); }, []);
-	result = <any>_.foldr([[0, 1], [2, 3], [4, 5]], function(a, b) { return a.concat(b); }, []);
+result = <number[]>_.reduceRight([[0, 1], [2, 3], [4, 5]], function(a, b) { return a.concat(b); }, []);
+result = <number[]>_.foldr([[0, 1], [2, 3], [4, 5]], function(a, b) { return a.concat(b); }, []);
 
 result = <number[]>_.reject([1, 2, 3, 4, 5, 6], function(num) { return num % 2 == 0; });
 result = <IFoodCombined[]>_.reject(foodsCombined, 'organic');
@@ -451,7 +451,7 @@ result = <number[]>_.sortBy([1, 2, 3], function(num) { return Math.sin(num); });
 result = <number[]>_.sortBy([1, 2, 3], function(num) { return this.sin(num); }, Math);
 result = <string[]>_.sortBy(['banana', 'strawberry', 'apple'], 'length');
 
-(function(a, b, c, d){ return _.toArray(arguments).slice(1); })(1, 2, 3, 4);
+(function(a: number, b: number, c: number, d: number){ return _.toArray(arguments).slice(1); })(1, 2, 3, 4);
 
 result = <IStoogesCombined[]>_.where(stoogesCombined, { 'age': 40 });
 result = <IStoogesCombined[]>_.where(stoogesCombined, { 'quotes': ['Poifect!'] });
@@ -460,7 +460,7 @@ result = <IStoogesCombined[]>_.where(stoogesCombined, { 'quotes': ['Poifect!'] }
  * Functions *
  *************/
 var saves = ['profile', 'settings'];
-var asyncSave = (obj) => obj.done();
+var asyncSave = (obj: any) => obj.done();
 var done: Function;
 
 done = _.after(saves.length, function() {
@@ -479,7 +479,7 @@ _.forEach(saves, function(type) {
   asyncSave({ 'type': type, 'complete': done });
 });
 
-var funcBind = function (greeting) { return greeting + ' ' + this.name };
+var funcBind = function (greeting: string) { return greeting + ' ' + this.name };
 var funcBind2: () => any = _.bind(funcBind, { 'name': 'moe' }, 'hi');
 funcBind2();
 
@@ -499,7 +499,7 @@ jQuery('#docs').on('click', view.onClick);
 
 var objectBindKey = {
   'name': 'moe',
-  'greet': function(greeting) {
+  'greet': function(greeting: string) {
     return greeting + ' ' + this.name;
   }
 };
@@ -520,12 +520,12 @@ var realNameMap = {
   'curly': 'jerome'
 };
 
-var format = function(name) {
+var format = function(name: string) {
   name = realNameMap[name.toLowerCase()] || name;
   return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
 };
 
-var greet = function(formatted) {
+var greet = function(formatted: string) {
   return 'Hiya ' + formatted + '!';
 };
 
@@ -595,7 +595,7 @@ var initialize = <Function>_.once(function(){ });
 initialize();
 initialize();
 
-var greetPartial = function(greeting, name) { return greeting + ' ' + name; };
+var greetPartial = function(greeting: string, name: string) { return greeting + ' ' + name; };
 var hi = <Function>_.partial(greetPartial, 'hi');
 hi('moe');
 
@@ -615,7 +615,7 @@ jQuery('.interactive').on('click', _.throttle(function() { }, 300000, {
   'trailing': false
 }));
 
-var helloWrap = function(name) { return 'hello ' + name; };
+var helloWrap = function(name: string) { return 'hello ' + name; };
 var helloWrap2 = _.wrap(helloWrap, function(func) {
   return 'before, ' + func('moe') + ', after';
 });
@@ -634,15 +634,15 @@ result = <_.LoDashObjectWrapper<any>>_({ 'name': 'moe' }).assign({ 'age': 40 }, 
   return typeof a == 'undefined' ? b : a;
 });
 
-	result = <any>_.extend({ 'name': 'moe' }, { 'age': 40 });
-	result = <any>_.extend({ 'name': 'moe' }, { 'age': 40 }, function(a, b) {
-	  return typeof a == 'undefined' ? b : a;
-	});
+result = <any>_.extend({ 'name': 'moe' }, { 'age': 40 });
+result = <any>_.extend({ 'name': 'moe' }, { 'age': 40 }, function(a, b) {
+  return typeof a == 'undefined' ? b : a;
+});
 
-	result = <_.LoDashObjectWrapper<any>>_({ 'name': 'moe' }).extend({ 'age': 40 });
-	result = <_.LoDashObjectWrapper<any>>_({ 'name': 'moe' }).extend({ 'age': 40 }, function(a, b) {
-	  return typeof a == 'undefined' ? b : a;
-	});
+result = <_.LoDashObjectWrapper<any>>_({ 'name': 'moe' }).extend({ 'age': 40 });
+result = <_.LoDashObjectWrapper<any>>_({ 'name': 'moe' }).extend({ 'age': 40 }, function(a, b) {
+  return typeof a == 'undefined' ? b : a;
+});
 
 var result = <any>_.clone(stoogesAges);
 var result = <any>_.clone(stoogesAges, true);
@@ -785,7 +785,7 @@ var mergeOtherFood = {
   'vegetables': ['carrot']
 };
 
-result = <any>_.merge(mergeFood, mergeOtherFood, function(a, b) {
+result = <Dictionary<List<string>>>_.merge(mergeFood, mergeOtherFood, function(a, b) {
   return _.isArray(a) ? a.concat(b) : undefined;
 });
 
