@@ -1,6 +1,6 @@
 /// <reference path="lodash.d.ts" />
 
-declare var $, jQuery;
+declare var $: any, jQuery: any;
 
 interface IFoodOrganic {
 	name: string;
@@ -72,13 +72,13 @@ var keys: IKey[] = [
   { 'dir': 'right', 'code': 100 }
 ];
 
-function Dog(name) {
-  this.name = name;
-}
+class Dog {
+	constructor(public name: string) {}
 
-Dog.prototype.bark = function() {
-  console.log('Woof, woof!');
-};
+	public bark() {
+	  console.log('Woof, woof!');
+	}
+}
 
 var result : any;
 
@@ -166,7 +166,7 @@ result = <number>_.findIndex(['apple', 'banana', 'beet'], function(f) {
 result = <number>_.findIndex(['apple', 'banana', 'beet'], 'apple');
 result = <number>_.findIndex([{ food: 'apple' }, { food: 'banana' }, { food: 'beet' }], { food: 'apple'});
 
-result = <number>_.findLastIndex(['apple', 'banana', 'beet'], function(f) {
+result = <number>_.findLastIndex(['apple', 'banana', 'beet'], function(f: string) {
   return /^b/.test(f);
 });
 result = <number>_.findLastIndex(['apple', 'banana', 'beet'], 'apple');
@@ -229,9 +229,9 @@ result = <number>_.lastIndexOf([1, 2, 3, 1, 2, 3], 2);
 result = <number>_.lastIndexOf([1, 2, 3, 1, 2, 3], 2, 3);
 
 result = <{[key: string]: any}>_.zipObject(['moe', 'larry'], [30, 40]);
-	result = <{[key: string]: any}>_.object(['moe', 'larry'], [30, 40]);
+result = <{[key: string]: any}>_.object(['moe', 'larry'], [30, 40]);
 
-result = <any[]>_.pull([1, 2, 3, 1, 2, 3], 2, 3);
+result = <number[]>_.pull([1, 2, 3, 1, 2, 3], 2, 3);
 
 result = <number[]>_.range(10);
 result = <number[]>_.range(1, 11);
@@ -240,7 +240,7 @@ result = <number[]>_.range(0, -10, -1);
 result = <number[]>_.range(1, 4, 0);
 result = <number[]>_.range(0);
 
-result = <number[]>_.remove([1, 2, 3, 4, 5, 6], function(num) { return num % 2 == 0; });
+result = <number[]>_.remove([1, 2, 3, 4, 5, 6], function(num: number) { return num % 2 == 0; });
 result = <IFoodOrganic[]>_.remove(foodsOrganic, 'organic');
 result = <IFoodType[]>_.remove(foodsType, { 'type': 'vegetable'});
 
@@ -277,7 +277,7 @@ result = <{x: number;}[]>_.uniq([{ 'x': 1 }, { 'x': 2 }, { 'x': 1 }], 'x');
 result = <number[]>_.without([1, 2, 1, 0, 3, 1, 4], 0, 1);
 
 result = <any[][]>_.zip(['moe', 'larry'], [30, 40], [true, false]);
-	result = <any[][]>_.unzip(['moe', 'larry'], [30, 40], [true, false]);
+result = <any[][]>_.unzip(['moe', 'larry'], [30, 40], [true, false]);
 
 // /* *************
 //  * Collections *
@@ -370,24 +370,34 @@ result = <_.Dictionary<number>>_.forEachRight({ 'one': 1, 'two': 2, 'three': 3 }
 	result = <number[]>_.eachRight([1, 2, 3], function(num) { console.log(num); });
 	result = <_.Dictionary<number>>_.eachRight({ 'one': 1, 'two': 2, 'three': 3 }, function(num) { console.log(num); });
 
+	result = <_.LoDashArrayWrapper<number>>_([1, 2, 3]).forEachRight(function(num) { console.log(num); });
+	result = <_.LoDashObjectWrapper<_.Dictionary<number>>>_({ 'one': 1, 'two': 2, 'three': 3 }).forEachRight(function(num) { console.log(num); });
+
+		result = <_.LoDashArrayWrapper<number>>_([1, 2, 3]).eachRight(function(num) { console.log(num); });
+		result = <_.LoDashObjectWrapper<_.Dictionary<number>>>_({ 'one': 1, 'two': 2, 'three': 3 }).eachRight(function(num) { console.log(num); });
+
 result = <_.Dictionary<number[]>>_.groupBy([4.2, 6.1, 6.4], function(num) { return Math.floor(num); });
 result = <_.Dictionary<number[]>>_.groupBy([4.2, 6.1, 6.4], function(num) { return this.floor(num); }, Math);
 result = <_.Dictionary<string[]>>_.groupBy(['one', 'two', 'three'], 'length');
+
+	result = <_.LoDashObjectWrapper<_.Dictionary<number[]>>>_([4.2, 6.1, 6.4]).groupBy(function(num) { return Math.floor(num); });
+	result = <_.LoDashObjectWrapper<_.Dictionary<number[]>>>_([4.2, 6.1, 6.4]).groupBy(function(num) { return this.floor(num); }, Math);
+	result = <_.LoDashObjectWrapper<_.Dictionary<string[]>>>_(['one', 'two', 'three']).groupBy('length');
 
 result = <_.Dictionary<IKey>>_.indexBy(keys, 'dir');
 result = <_.Dictionary<IKey>>_.indexBy(keys, function(key) { return String.fromCharCode(key.code); });
 result = <_.Dictionary<IKey>>_.indexBy(keys, function(key) { this.fromCharCode(key.code); }, String);
 
-result = <any[]>_.invoke([[5, 1, 7], [3, 2, 1]], 'sort');
-result = <any[]>_.invoke([123, 456], String.prototype.split, '');
+result = <number[][]>_.invoke([[5, 1, 7], [3, 2, 1]], 'sort');
+result = <string[][]>_.invoke([123, 456], String.prototype.split, '');
 
-result = <any[]>_.map([1, 2, 3], function(num) { return num * 3; });
-result = <any[]>_.map({ 'one': 1, 'two': 2, 'three': 3 }, function(num) { return num * 3; });
-result = <any[]>_.map(stoogesAges, 'name');
+result = <number[]>_.map([1, 2, 3], function(num) { return num * 3; });
+result = <number[]>_.map({ 'one': 1, 'two': 2, 'three': 3 }, function(num) { return num * 3; });
+result = <IStoogesAge[]>_.map(stoogesAges, 'name');
 
-	result = <any[]>_.collect([1, 2, 3], function(num) { return num * 3; });
-	result = <any[]>_.collect({ 'one': 1, 'two': 2, 'three': 3 }, function(num) { return num * 3; });
-	result = <any[]>_.collect(stoogesAges, 'name');
+result = <number[]>_.collect([1, 2, 3], function(num) { return num * 3; });
+result = <number[]>_.collect({ 'one': 1, 'two': 2, 'three': 3 }, function(num) { return num * 3; });
+result = <IStoogesAge[]>_.collect(stoogesAges, 'name');
 
 result = <number>_.max([4, 2, 8, 6]);
 result = <IStoogesAge>_.max(stoogesAges, function(stooge) { return stooge.age; });
@@ -399,32 +409,37 @@ result = <IStoogesAge>_.min(stoogesAges, 'age');
 
 result = <string[]>_.pluck(stoogesAges, 'name');
 
-result = <any>_.reduce([1, 2, 3], function(sum, num) {
+result = <number>_.reduce<number, number>([1, 2, 3], function(sum: number, num: number) {
   return sum + num;
 });
-result = <any>_.reduce({ 'a': 1, 'b': 2, 'c': 3 }, function(result, num, key) {
-  result[key] = num * 3;
-  return result;
+interface ABC {
+  a: number;
+  b: number;
+  c: number;
+}
+result = <ABC>_.reduce({ 'a': 1, 'b': 2, 'c': 3 }, function(r: ABC, num, key) {
+  r[key] = num * 3;
+  return r;
 }, {});
 
-	result = <any>_.foldl([1, 2, 3], function(sum, num) {
-	  return sum + num;
-	});
-	result = <any>_.foldl({ 'a': 1, 'b': 2, 'c': 3 }, function(result, num, key) {
-	  result[key] = num * 3;
-	  return result;
-	}, {});
+result = <number>_.foldl([1, 2, 3], function(sum, num) {
+  return sum + num;
+});
+result = <ABC>_.foldl({ 'a': 1, 'b': 2, 'c': 3 }, function(r: ABC, num, key) {
+  r[key] = num * 3;
+  return r;
+}, {});
 
-	result = <any>_.inject([1, 2, 3], function(sum, num) {
-	  return sum + num;
-	});
-	result = <any>_.inject({ 'a': 1, 'b': 2, 'c': 3 }, function(result, num, key) {
-	  result[key] = num * 3;
-	  return result;
-	}, {});
+result = <number>_.inject([1, 2, 3], function(sum, num) {
+  return sum + num;
+});
+result = <ABC>_.inject({ 'a': 1, 'b': 2, 'c': 3 }, function(r: ABC, num, key) {
+  r[key] = num * 3;
+  return r;
+}, {});
 
-result = <any>_.reduceRight([[0, 1], [2, 3], [4, 5]], function(a, b) { return a.concat(b); }, []);
-	result = <any>_.foldr([[0, 1], [2, 3], [4, 5]], function(a, b) { return a.concat(b); }, []);
+result = <number[]>_.reduceRight([[0, 1], [2, 3], [4, 5]], function(a: number[], b: number[]) { return a.concat(b); }, <number[]>[]);
+result = <number[]>_.foldr([[0, 1], [2, 3], [4, 5]], function(a: number[], b: number[]) { return a.concat(b); }, <number[]>[]);
 
 result = <number[]>_.reject([1, 2, 3, 4, 5, 6], function(num) { return num % 2 == 0; });
 result = <IFoodCombined[]>_.reject(foodsCombined, 'organic');
@@ -443,15 +458,15 @@ result = <boolean>_.some([null, 0, 'yes', false], Boolean);
 result = <boolean>_.some(foodsCombined, 'organic');
 result = <boolean>_.some(foodsCombined, { 'type': 'meat' });
 	
-	result = <boolean>_.any([null, 0, 'yes', false], Boolean);
-	result = <boolean>_.any(foodsCombined, 'organic');
-	result = <boolean>_.any(foodsCombined, { 'type': 'meat' });
+result = <boolean>_.any([null, 0, 'yes', false], Boolean);
+result = <boolean>_.any(foodsCombined, 'organic');
+result = <boolean>_.any(foodsCombined, { 'type': 'meat' });
 	
 result = <number[]>_.sortBy([1, 2, 3], function(num) { return Math.sin(num); });
 result = <number[]>_.sortBy([1, 2, 3], function(num) { return this.sin(num); }, Math);
 result = <string[]>_.sortBy(['banana', 'strawberry', 'apple'], 'length');
 
-(function(a, b, c, d){ return _.toArray(arguments).slice(1); })(1, 2, 3, 4);
+(function(a: number, b: number, c: number, d: number){ return _.toArray(arguments).slice(1); })(1, 2, 3, 4);
 
 result = <IStoogesCombined[]>_.where(stoogesCombined, { 'age': 40 });
 result = <IStoogesCombined[]>_.where(stoogesCombined, { 'quotes': ['Poifect!'] });
@@ -460,7 +475,7 @@ result = <IStoogesCombined[]>_.where(stoogesCombined, { 'quotes': ['Poifect!'] }
  * Functions *
  *************/
 var saves = ['profile', 'settings'];
-var asyncSave = (obj) => obj.done();
+var asyncSave = (obj: any) => obj.done();
 var done: Function;
 
 done = _.after(saves.length, function() {
@@ -479,7 +494,7 @@ _.forEach(saves, function(type) {
   asyncSave({ 'type': type, 'complete': done });
 });
 
-var funcBind = function (greeting) { return greeting + ' ' + this.name };
+var funcBind = function (greeting: string) { return greeting + ' ' + this.name };
 var funcBind2: () => any = _.bind(funcBind, { 'name': 'moe' }, 'hi');
 funcBind2();
 
@@ -499,7 +514,7 @@ jQuery('#docs').on('click', view.onClick);
 
 var objectBindKey = {
   'name': 'moe',
-  'greet': function(greeting) {
+  'greet': function(greeting: string) {
     return greeting + ' ' + this.name;
   }
 };
@@ -520,12 +535,12 @@ var realNameMap = {
   'curly': 'jerome'
 };
 
-var format = function(name) {
+var format = function(name: string) {
   name = realNameMap[name.toLowerCase()] || name;
   return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
 };
 
-var greet = function(formatted) {
+var greet = function(formatted: string) {
   return 'Hiya ' + formatted + '!';
 };
 
@@ -546,7 +561,7 @@ result = <_.LoDashObjectWrapper<Function>>_(function(a, b, c) {
   	console.log(a + b + c);
 }).curry();
 
-declare var source;
+declare var source: any;
 result = <Function>_.debounce(function() {}, 150);
 
 jQuery('#postbox').on('click', <Function>_.debounce(function() {}, 300, {
@@ -585,7 +600,7 @@ var data = {
   'curly': { 'name': 'curly', 'age': 60 }
 };
 
-var stooge = <Function>_.memoize(function(name) { return data[name]; }, _.identity);
+var stooge = <Function>_.memoize(function(name: string) { return data[name]; }, _.identity);
 stooge('curly');
 
 stooge['cache']['curly'].name = 'jerome';
@@ -595,7 +610,7 @@ var initialize = <Function>_.once(function(){ });
 initialize();
 initialize();
 
-var greetPartial = function(greeting, name) { return greeting + ' ' + name; };
+var greetPartial = function(greeting: string, name: string) { return greeting + ' ' + name; };
 var hi = <Function>_.partial(greetPartial, 'hi');
 hi('moe');
 
@@ -615,7 +630,7 @@ jQuery('.interactive').on('click', _.throttle(function() { }, 300000, {
   'trailing': false
 }));
 
-var helloWrap = function(name) { return 'hello ' + name; };
+var helloWrap = function(name: string) { return 'hello ' + name; };
 var helloWrap2 = _.wrap(helloWrap, function(func) {
   return 'before, ' + func('moe') + ', after';
 });
@@ -624,40 +639,48 @@ helloWrap2();
 /**********
 * Objects *
 ***********/
-result = <any>_.assign({ 'name': 'moe' }, { 'age': 40 });
-result = <any>_.assign({ 'name': 'moe' }, { 'age': 40 }, function(a, b) {
+interface NameAge {
+  name: string;
+  age: number;
+}
+result = <NameAge>_.assign({ 'name': 'moe' }, { 'age': 40 });
+result = <NameAge>_.assign({ 'name': 'moe' }, { 'age': 40 }, function(a, b) {
   return typeof a == 'undefined' ? b : a;
 });
 
-result = <_.LoDashObjectWrapper<any>>_({ 'name': 'moe' }).assign({ 'age': 40 });
-result = <_.LoDashObjectWrapper<any>>_({ 'name': 'moe' }).assign({ 'age': 40 }, function(a, b) {
+result = <_.LoDashObjectWrapper<NameAge>>_({ 'name': 'moe' }).assign({ 'age': 40 });
+result = <_.LoDashObjectWrapper<NameAge>>_({ 'name': 'moe' }).assign({ 'age': 40 }, function(a, b) {
   return typeof a == 'undefined' ? b : a;
 });
 
-	result = <any>_.extend({ 'name': 'moe' }, { 'age': 40 });
-	result = <any>_.extend({ 'name': 'moe' }, { 'age': 40 }, function(a, b) {
-	  return typeof a == 'undefined' ? b : a;
-	});
+result = <NameAge>_.extend({ 'name': 'moe' }, { 'age': 40 });
+result = <NameAge>_.extend({ 'name': 'moe' }, { 'age': 40 }, function(a, b) {
+  return typeof a == 'undefined' ? b : a;
+});
 
-	result = <_.LoDashObjectWrapper<any>>_({ 'name': 'moe' }).extend({ 'age': 40 });
-	result = <_.LoDashObjectWrapper<any>>_({ 'name': 'moe' }).extend({ 'age': 40 }, function(a, b) {
-	  return typeof a == 'undefined' ? b : a;
-	});
+result = <_.LoDashObjectWrapper<NameAge>>_({ 'name': 'moe' }).extend({ 'age': 40 });
+result = <_.LoDashObjectWrapper<NameAge>>_({ 'name': 'moe' }).extend({ 'age': 40 }, function(a, b) {
+  return typeof a == 'undefined' ? b : a;
+});
 
-var result = <any>_.clone(stoogesAges);
-var result = <any>_.clone(stoogesAges, true);
-var result = <any>_.clone(stoogesAges, true, function(value) {
+result = <IStoogesAge[]>_.clone(stoogesAges);
+result = <IStoogesAge[]>_.clone(stoogesAges, true);
+result = <any>_.clone(stoogesAges, true, function(value) {
     return _.isElement(value) ? value.cloneNode(false) : undefined;
 });
 
-var result = <any>_.cloneDeep(stoogesAges);
-var result = <any>_.cloneDeep(stoogesAges, function(value) {
+result = <IStoogesAge[]>_.cloneDeep(stoogesAges);
+result = <IStoogesAge[]>_.cloneDeep(stoogesAges, function(value) {
     return _.isElement(value) ? value.cloneNode(false) : undefined;
 });
 
+interface Food {
+  name: string;
+  type: string;
+}
 var foodDefaults = { 'name': 'apple' };
-result = <any>_.defaults(foodDefaults, { 'name': 'banana', 'type': 'fruit' });
-result = <any>_(foodDefaults).defaults({ 'name': 'banana', 'type': 'fruit' });
+result = <Food>_.defaults(foodDefaults, { 'name': 'banana', 'type': 'fruit' });
+  result = <_.LoDashObjectWrapper<Food>>_(foodDefaults).defaults({ 'name': 'banana', 'type': 'fruit' });
 
 result = <string>_.findKey({ 'a': 1, 'b': 2, 'c': 3, 'd': 4 }, function(num) {
   return num % 2 == 0;
@@ -667,28 +690,57 @@ result = <string>_.findLastKey({ 'a': 1, 'b': 2, 'c': 3, 'd': 4 }, function(num)
   return num % 2 == 1;
 });
 
-result = <any>_.forIn(new Dog('Dagny'), function(value, key) {
+result = <Dog>_.forIn(new Dog('Dagny'), function(value, key) {
   console.log(key);
 });
 
-result = <any>_.forInRight(new Dog('Dagny'), function(value, key) {
+result = <_.LoDashObjectWrapper<Dog>>_(new Dog('Dagny')).forIn(function(value, key) {
   console.log(key);
 });
 
-result = <any>_.forOwn({ '0': 'zero', '1': 'one', 'length': 2 }, function(num, key) {
+result = <Dog>_.forInRight(new Dog('Dagny'), function(value, key) {
   console.log(key);
 });
+
+result = <_.LoDashObjectWrapper<Dog>>_(new Dog('Dagny')).forInRight(function(value, key) {
+  console.log(key);
+});
+
+interface ZeroOne {
+  0: string;
+  1: string;
+  one: string;
+}
+
+result = <ZeroOne>_.forOwn({ '0': 'zero', '1': 'one', 'length': 2 }, function(num, key) {
+  console.log(key);
+});
+
+	result = <_.LoDashObjectWrapper<ZeroOne>>_({ '0': 'zero', '1': 'one', 'length': 2 }).forOwn(function(num, key) {
+	  console.log(key);
+	});
 
 result = <any>_.forOwnRight({ '0': 'zero', '1': 'one', 'length': 2 }, function(num, key) {
   console.log(key);
 });
 
+	result = <_.LoDashObjectWrapper<ZeroOne>>_({ '0': 'zero', '1': 'one', 'length': 2 }).forOwnRight(function(num, key) {
+	  console.log(key);
+	});
+
 result = <string[]>_.functions(_);
- 	result = <string[]>_.methods(_);
+result = <string[]>_.methods(_);
+
+result = <_.LoDashArrayWrapper<string>>_(_).functions();
+result = <_.LoDashArrayWrapper<string>>_(_).methods();
 
 result = <boolean>_.has({ 'a': 1, 'b': 2, 'c': 3 }, 'b');
 
-result = <any>_.invert({ 'first': 'moe', 'second': 'larry' });
+interface FirstSecond {
+  first: string;
+  second: string;
+}
+result = <FirstSecond>_.invert({ 'first': 'moe', 'second': 'larry' });
 
 (function(...args: any[]) { return <boolean>_.isArguments(arguments); })(1, 2, 3);
 
@@ -742,9 +794,11 @@ result = <boolean>_.isObject({});
 result = <boolean>_.isObject([1, 2, 3]);
 result = <boolean>_.isObject(1);
 
-function Stooge(name, age) {
-  this.name = name;
-  this.age = age;
+class Stooge {
+	constructor(
+		public name: string,
+		public age: number
+	) {}
 }
 
 result = <boolean>_.isPlainObject(new Stooge('moe', 40));
@@ -773,7 +827,7 @@ var mergeAges = {
   ]
 };
 
-result = <any>_.merge(mergeNames, mergeAges);
+result = <NameAge>_.merge(mergeNames, mergeAges);
 
 var mergeFood = {
   'fruits': ['apple'],
@@ -785,37 +839,45 @@ var mergeOtherFood = {
   'vegetables': ['carrot']
 };
 
-result = <any>_.merge(mergeFood, mergeOtherFood, function(a, b) {
+interface FruitVeg {
+  fruits: string[];
+  vegetables: string[]
+};
+
+result = <FruitVeg[]>_.merge(mergeFood, mergeOtherFood, function(a, b) {
   return _.isArray(a) ? a.concat(b) : undefined;
 });
 
-result = <any>_.omit({ 'name': 'moe', 'age': 40 }, 'age');
-result = <any>_.omit({ 'name': 'moe', 'age': 40 }, ['age']);
-result = <any>_.omit({ 'name': 'moe', 'age': 40 }, function(value) {
+interface HasName {
+  name: string;
+}
+result = <HasName>_.omit({ 'name': 'moe', 'age': 40 }, 'age');
+result = <HasName>_.omit({ 'name': 'moe', 'age': 40 }, ['age']);
+result = <HasName>_.omit({ 'name': 'moe', 'age': 40 }, function(value) {
   return typeof value == 'number';
 });
 
 result = <any[][]>_.pairs({ 'moe': 30, 'larry': 40 });
 
-result = <any>_.pick({ 'name': 'moe', '_userid': 'moe1' }, 'name');
-result = <any>_.pick({ 'name': 'moe', '_userid': 'moe1' }, ['name']);
-result = <any>_.pick({ 'name': 'moe', '_userid': 'moe1' }, function(value, key) {
+result = <HasName>_.pick({ 'name': 'moe', '_userid': 'moe1' }, 'name');
+result = <HasName>_.pick({ 'name': 'moe', '_userid': 'moe1' }, ['name']);
+result = <HasName>_.pick({ 'name': 'moe', '_userid': 'moe1' }, function(value, key) {
   return key.charAt(0) != '_';
 });
 
-result = <any>_.transform([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], function(result, num) {
+result = <number[]>_.transform([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], function(r, num) {
   num *= num;
   if (num % 2) {
-    return result.push(num) < 3;
+    return r.push(num) < 3;
   }
 });
 // → [1, 9, 25]
 
-result = <any>_.transform({ 'a': 1, 'b': 2, 'c': 3 }, function(result, num, key) {
-  result[key] = num * 3;
+result = <{a:number;b:number;c:number;}>_.transform({ 'a': 1, 'b': 2, 'c': 3 }, function(r, num, key) {
+  r[key] = num * 3;
 });
 
-result = <any[]>_.values({ 'one': 1, 'two': 2, 'three': 3 });
+result = <number[]>_.values({ 'one': 1, 'two': 2, 'three': 3 });
 
 /**********
 * Utilities *
@@ -848,8 +910,8 @@ var object = {
   }
 };
 
-result = <any>_.result(object, 'cheese');
-result = <any>_.result(object, 'stuff');
+result = <string>_.result(object, 'cheese');
+result = <string>_.result(object, 'stuff');
 
 var tempObject = {};
 result = <typeof _>_.runInContext(tempObject);
@@ -869,14 +931,20 @@ result = <_.TemplateExecutor>_.template('hello <%= name %>', null, { 'sourceURL'
 result = <_.TemplateExecutor>_.template('hi <%= data.name %>!', null, { 'variable': 'data' });
 result = <string>(<_.TemplateExecutor>result).source;
 
-function Mage() {
-	this.castSpell = (n:number) => n;
-	this.cast = (n: number) => n;
-};
+class Mage {
+	public castSpell(n: number) {
+		return n;
+	}
+
+	public cast(n: number) {
+		return n;
+	}
+}
+
 var mage = new Mage(); 
-result = <any[]>_.times(3, _.partial(_.random, 1, 6));
-result = <any[]>_.times(3, function(n: number) { mage.castSpell(n); });
-result = <any[]>_.times(3, function(n: number) { this.cast(n); }, mage);
+result = <number[]>_.times(3, _.partial(_.random, 1, 6));
+result = <number[]>_.times(3, function(n: number) { mage.castSpell(n); });
+result = <number[]>_.times(3, function(n: number) { this.cast(n); }, mage);
 
 result = <string>_.unescape('Moe, Larry &amp; Curly');
 
