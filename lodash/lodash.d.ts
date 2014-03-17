@@ -2,66 +2,9 @@
 // Project: http://lodash.com/
 // Definitions by: Brian Zengel <https://github.com/bczengel>
 // Definitions: https://github.com/borisyankov/DefinitelyTyped
-
 declare var _: _.LoDashStatic;
 
 declare module _ {
-	interface LoDashStatic {
-		/**
-		* Creates a lodash object which wraps the given value to enable intuitive method chaining.
-		*
-		* In addition to Lo-Dash methods, wrappers also have the following Array methods:
-		* concat, join, pop, push, reverse, shift, slice, sort, splice, and unshift
-		*
-		* Chaining is supported in custom builds as long as the value method is implicitly or 
-		* explicitly included in the build.
-		*
-		* The chainable wrapper functions are:
-		* after, assign, bind, bindAll, bindKey, chain, compact, compose, concat, countBy, 
-		* createCallback, curry, debounce, defaults, defer, delay, difference, filter, flatten, 
-		* forEach, forEachRight, forIn, forInRight, forOwn, forOwnRight, functions, groupBy, 
-		* indexBy, initial, intersection, invert, invoke, keys, map, max, memoize, merge, min, 
-		* object, omit, once, pairs, partial, partialRight, pick, pluck, pull, push, range, reject, 
-		* remove, rest, reverse, shuffle, slice, sort, sortBy, splice, tap, throttle, times, 
-		* toArray, transform, union, uniq, unshift, unzip, values, where, without, wrap, and zip
-		*
-		* The non-chainable wrapper functions are:
-		* clone, cloneDeep, contains, escape, every, find, findIndex, findKey, findLast, 
-		* findLastIndex, findLastKey, has, identity, indexOf, isArguments, isArray, isBoolean, 
-		* isDate, isElement, isEmpty, isEqual, isFinite, isFunction, isNaN, isNull, isNumber, 
-		* isObject, isPlainObject, isRegExp, isString, isUndefined, join, lastIndexOf, mixin, 
-		* noConflict, parseInt, pop, random, reduce, reduceRight, result, shift, size, some, 
-		* sortedIndex, runInContext, template, unescape, uniqueId, and value
-		*
-		* The wrapper functions first and last return wrapped values when n is provided, otherwise 
-		* they return unwrapped values.
-		*
-		* Explicit chaining can be enabled by using the _.chain method.
-		**/
-		(value: number): LoDashWrapper<number>;
-		(value: string): LoDashWrapper<string>;
-		(value: boolean): LoDashWrapper<boolean>;
-		<T>(value: Array<T>): LoDashArrayWrapper<T>;
-		<T>(value: T): LoDashObjectWrapper<T>;
-		(value: any): LoDashWrapper<any>;
-
-		/**
-		* The semantic version number.
-		**/
-		VERSION: string;
-
-		/**
-		* An object used to flag environments features.
-		**/
-		support: Support;
-
-		/**
-		* By default, the template delimiters used by Lo-Dash are similar to those in embedded Ruby 
-		* (ERB). Change the following template settings to use alternative delimiters.
-		**/
-		templateSettings: TemplateSettings;
-	}
-
 	/**
 	* By default, the template delimiters used by Lo-Dash are similar to those in embedded Ruby 
 	* (ERB). Change the following template settings to use alternative delimiters.
@@ -168,69 +111,97 @@ declare module _ {
 		unindexedChars: boolean;
 	}
 
-	interface LoDashWrapperBase<T, TWrapper> {
-		/**
-		* Produces the toString result of the wrapped value.
-		* @return Returns the string result.
-		**/
-		toString(): string;
+	interface ThrottleSettings {
 
 		/**
-		* Extracts the wrapped value.
-		* @return The wrapped value.
+		* If you'd like to disable the leading-edge call, pass this as false.
 		**/
-		valueOf(): T;
+		leading?: boolean;
 
-			/**
-			* @see valueOf
-			**/
-			value(): T;
-	} 
-
-	interface LoDashWrapper<T> extends LoDashWrapperBase<T, LoDashWrapper<T>> {}
-
-	interface LoDashObjectWrapper<T> extends LoDashWrapperBase<T, LoDashObjectWrapper<T>> {}
-
-	interface LoDashArrayWrapper<T> extends LoDashWrapperBase<T[], LoDashArrayWrapper<T>> {
-		concat(...items: T[]): LoDashArrayWrapper<T>;
-		join(seperator?: string): LoDashWrapper<string>;
-		pop(): LoDashWrapper<T>;
-		push(...items: T[]): void;
-		reverse(): LoDashArrayWrapper<T>;
-		shift(): LoDashWrapper<T>;
-		slice(start: number, end?: number): LoDashArrayWrapper<T>;
-		sort(compareFn?: (a: T, b: T) => number): LoDashArrayWrapper<T>;
-		splice(start: number): LoDashArrayWrapper<T>;
-		splice(start: number, deleteCount: number, ...items: any[]): LoDashArrayWrapper<T>;
-		unshift(...items: any[]): LoDashWrapper<number>;
+		/**
+		* If you'd like to disable the execution on the trailing-edge, pass false.
+		**/
+		trailing?: boolean;
 	}
 
-	//_.chain
-	interface LoDashStatic {
-		/**
-		* Creates a lodash object that wraps the given value with explicit method chaining enabled.
-		* @param value The value to wrap.
-		* @return The wrapper object.
-		**/
-		chain(value: number): LoDashWrapper<number>;
-		chain(value: string): LoDashWrapper<string>;
-		chain(value: boolean): LoDashWrapper<boolean>;
-		chain<T>(value: Array<T>): LoDashArrayWrapper<T>;
-		chain<T>(value: T): LoDashObjectWrapper<T>;
-		chain(value: any): LoDashWrapper<any>;
+	interface ListIterator<T, TResult> {
+		(value: T, index: number, list: T[]): TResult;
 	}
 
-	interface LoDashWrapperBase<T, TWrapper> {
-		/**
-		* Enables explicit method chaining on the wrapper object.
-		* @see _.chain
-		* @return The wrapper object.
-		**/
-		chain(): TWrapper;
+	interface ObjectIterator<T, TResult> {
+		(element: T, key: string, list: any): TResult;
 	}
+
+	interface MemoVoidIterator<T, TResult> {
+		(prev: TResult, curr: T, indexOrKey: any, list?: T[]): void;
+	}
+	interface MemoIterator<T, TResult> {
+		(prev: TResult, curr: T, indexOrKey: any, list?: T[]): TResult;
+	}
+
+	interface Collection<T> { }
+
+	// Common interface between Arrays and jQuery objects
+	interface List<T> extends Collection<T> {
+		[index: number]: T;
+		length: number;
+	}
+
+	interface Dictionary<T> extends Collection<T> {
+		[index: string]: T;
+    }
+
+    interface LoDashStatic {
+
+		/**
+		* Creates a lodash object which wraps the given value to enable intuitive method chaining.
+		*
+		* In addition to Lo-Dash methods, wrappers also have the following Array methods:
+		* concat, join, pop, push, reverse, shift, slice, sort, splice, and unshift
+		*
+		* Chaining is supported in custom builds as long as the value method is implicitly or 
+		* explicitly included in the build.
+		*
+		* The chainable wrapper functions are:
+		* after, assign, bind, bindAll, bindKey, chain, compact, compose, concat, countBy, 
+		* createCallback, curry, debounce, defaults, defer, delay, difference, filter, flatten, 
+		* forEach, forEachRight, forIn, forInRight, forOwn, forOwnRight, functions, groupBy, 
+		* indexBy, initial, intersection, invert, invoke, keys, map, max, memoize, merge, min, 
+		* object, omit, once, pairs, partial, partialRight, pick, pluck, pull, push, range, reject, 
+		* remove, rest, reverse, shuffle, slice, sort, sortBy, splice, tap, throttle, times, 
+		* toArray, transform, union, uniq, unshift, unzip, values, where, without, wrap, and zip
+		*
+		* The non-chainable wrapper functions are:
+		* clone, cloneDeep, contains, escape, every, find, findIndex, findKey, findLast, 
+		* findLastIndex, findLastKey, has, identity, indexOf, isArguments, isArray, isBoolean, 
+		* isDate, isElement, isEmpty, isEqual, isFinite, isFunction, isNaN, isNull, isNumber, 
+		* isObject, isPlainObject, isRegExp, isString, isUndefined, join, lastIndexOf, mixin, 
+		* noConflict, parseInt, pop, random, reduce, reduceRight, result, shift, size, some, 
+		* sortedIndex, runInContext, template, unescape, uniqueId, and value
+		*
+		* The wrapper functions first and last return wrapped values when n is provided, otherwise 
+		* they return unwrapped values.
+		*
+		* Explicit chaining can be enabled by using the _.chain method.
+		**/
+
+		/**
+		* The semantic version number.
+		**/
+		VERSION: string;
+
+		/**
+		* An object used to flag environments features.
+		**/
+		support: Support;
+
+		/**
+		* By default, the template delimiters used by Lo-Dash are similar to those in embedded Ruby 
+		* (ERB). Change the following template settings to use alternative delimiters.
+		**/
+		templateSettings: TemplateSettings;
 
 	//_.tap
-	interface LoDashStatic {
 		/**
 		* Invokes interceptor with the value as the first argument and then returns value. The 
 		* purpose of this method is to "tap into" a method chain in order to perform operations on 
@@ -242,21 +213,12 @@ declare module _ {
 		tap<T>(
 			value: T,
 			interceptor: (value: T) => void): T;
-	}
-
-	interface LoDashWrapperBase<T, TWrapper> {
-		/**
-		* @see _.tap
-		**/
-		tap(interceptor: (value: T) => void): TWrapper;
-	}
 
 	/*********
 	* Arrays *
 	**********/
 
 	//_.compact
-	interface LoDashStatic {
 		/**
 		* Returns a copy of the array with all falsy values removed. In JavaScript, false, null, 0, "",
 		* undefined and NaN are all falsy.
@@ -264,17 +226,8 @@ declare module _ {
 		* @return (Array) Returns a new array of filtered values.
 		**/
 		compact<T>(array: List<T>): T[];
-	}
-
-	interface LoDashArrayWrapper<T> {
-		/**
-		* @see _.compact
-		**/
-		compact<T>(): LoDashArrayWrapper<T>;
-	}	
 
 	//_.difference
-	interface LoDashStatic {
 		/**
 		* Creates an array excluding all values of the provided arrays using strict equality for comparisons
 		* , i.e. ===.
@@ -285,18 +238,8 @@ declare module _ {
 		difference<T>(
 			array: List<T>,
 			...others: List<T>[]): T[];
-	}
-
-	interface LoDashArrayWrapper<T> {
-		/**
-		* @see _.difference
-		**/
-		difference(
-			...others: List<T>[]): LoDashArrayWrapper<T>;
-	}
 
 	//_.findIndex
-	interface LoDashStatic {
 		/**
 		* This method is like _.find except that it returns the index of the first element that passes 
 		* the callback check, instead of the element itself.
@@ -324,10 +267,8 @@ declare module _ {
 		findIndex<T>(
 			array: List<T>,
 			whereDictionary: T): number;
-	}
 
 	//_.findLastIndex
-	interface LoDashStatic {
 		/**
 		* This method is like _.findIndex except that it iterates over elements of a collection from right to left.
 		* @param array The array to search.
@@ -354,10 +295,8 @@ declare module _ {
 		findLastIndex<T>(
 			array: List<T>,
 			whereDictionary: Dictionary<any>): number;
-	}
 
 	//_.first
-	interface LoDashStatic {
 		/**
 		* Gets the first element or first n elements of an array. If a callback is provided 
 		* elements at the beginning of the array are returned as long as the callback returns 
@@ -475,10 +414,8 @@ declare module _ {
 			take<T>(
 				array: List<T>,
 				whereValue: T): T[];
-	}
 
 	//_.flatten
-	interface LoDashStatic {
 		/**
 		* Flattens a nested array (the nesting can be to any depth). If isShallow is truey, the 
 		* array will only be flattened a single level. If a callback is provided each element of 
@@ -524,40 +461,8 @@ declare module _ {
 		flatten<T>(
 			array: List<any>,
 			pluckValue: string): T[];			
-	}
-
-	interface LoDashArrayWrapper<T> {
-		/**
-		* @see _.flatten
-		**/
-        flatten<Flat>(isShallow?: boolean): LoDashArrayWrapper<Flat>;
-
-        flatten<Flat>(
-			isShallow: boolean,
-			callback: ListIterator<T, Flat>,
-			thisArg?: any): LoDashArrayWrapper<Flat>;
-
-        flatten<Flat>(
-			callback: ListIterator<T, Flat>,
-			thisArg?: any): LoDashArrayWrapper<Flat>;
-
-        flatten<Flat>(
-			isShallow: boolean,
-			pluckValue: string): LoDashArrayWrapper<Flat>;
-
-        flatten<Flat>(
-			pluckValue: string): LoDashArrayWrapper<Flat>;
-
-        flatten<T>(
-			isShallow: boolean,
-			whereValue: T): LoDashArrayWrapper<T>;
-
-        flatten<T>(
-			whereValue: T): LoDashArrayWrapper<T>;
-	}
 
 	//_.indexOf
-	interface LoDashStatic {
 		/**
 		* Gets the index at which the first occurrence of value is found using strict equality 
 		* for comparisons, i.e. ===. If the array is already sorted providing true for fromIndex 
@@ -588,10 +493,8 @@ declare module _ {
 			array: List<T>,
 			value: T,
 			isSorted: boolean): number;
-	}
 
 	//_.initial
-	interface LoDashStatic {
 		/**
 		* Gets all but the last element or last n elements of an array. If a callback is provided 
 		* elements at the end of the array are excluded from the result as long as the callback 
@@ -641,10 +544,8 @@ declare module _ {
 		initial<T>(
 			array: List<T>,
 			whereValue: T): T[];
-	}
 
 	//_.intersection
-	interface LoDashStatic {
 		/**
 		* Creates an array of unique values present in all provided arrays using strict 
 		* equality for comparisons, i.e. ===.
@@ -652,10 +553,8 @@ declare module _ {
 		* @return Returns an array of composite values.
 		**/
 		intersection<T>(...arrays: List<T>[]): T[];
-	}
 
 	//_.last
-	interface LoDashStatic {
 		/**
 		* Gets the last element or last n elements of an array. If a callback is provided 
 		* elements at the end of the array are returned as long as the callback returns truey. 
@@ -703,10 +602,8 @@ declare module _ {
 		last<T>(
 			array: List<T>,
 			whereValue: T): T[];
-	}
 
 	//_.lastIndexOf
-	interface LoDashStatic {
 		/**
 		* Gets the index at which the last occurrence of value is found using strict equality 
 		* for comparisons, i.e. ===. If fromIndex is negative, it is used as the offset from the 
@@ -720,10 +617,8 @@ declare module _ {
 			array: List<T>,
 			value: T,
 			fromIndex?: number): number;
-	}
 	
 	//_.pull
-	interface LoDashStatic {
 		/**
 		* Removes all provided values from the given array using strict equality for comparisons, 
 		* i.e. ===.
@@ -734,10 +629,8 @@ declare module _ {
 		pull(
 			array: List<any>,
 			...values: any[]): any[];
-	}
 
 	//_.range
-	interface LoDashStatic {
 		/**
 		* Creates an array of numbers (positive and/or negative) progressing from start up 
 		* to but not including end. If start is less than stop a zero-length range is created 
@@ -760,10 +653,8 @@ declare module _ {
 		* @note If start is not specified the implementation will never pull the step (step = arguments[2] || 0)
 		**/
 		range(stop: number): number[];
-	}
 
 	//_.remove
-	interface LoDashStatic {
 		/**
 		* Removes all elements from an array that the callback returns truey for and returns 
 		* an array of removed elements. The callback is bound to thisArg and invoked with three 
@@ -799,10 +690,8 @@ declare module _ {
 		remove(
 			array: List<any>,
 			wherealue?: Dictionary<any>): any[];
-	}
 
 	//_.rest
-	interface LoDashStatic {
 		/**
 		* The opposite of _.initial this method gets all but the first element or first n elements of 
 		* an array. If a callback function is provided elements at the beginning of the array are excluded 
@@ -919,10 +808,8 @@ declare module _ {
                 tail<T>(
                     array: List<T>,
                     whereValue: T): T[];
-	}
 
 	//_.sortedIndex
-	interface LoDashStatic {
 		/**
 		* Uses a binary search to determine the smallest index at which a value should be inserted 
 		* into a given sorted array in order to maintain the sort order of the array. If a callback 
@@ -962,10 +849,8 @@ declare module _ {
 			array: List<T>,
 			value: T,
 			whereValue: T): number;
-	}
 
 	//_.union
-	interface LoDashStatic {
 		/**
 		* Creates an array of unique values, in order, of the provided arrays using strict 
 		* equality for comparisons, i.e. ===.
@@ -973,10 +858,8 @@ declare module _ {
 		* @return Returns an array of composite values.
 		**/
 		union<T>(...arrays: List<T>[]): T[];
-	}
 
 	//_.uniq
-	interface LoDashStatic {
 		/**
 		* Creates a duplicate-value-free version of an array using strict equality for comparisons, 
 		* i.e. ===. If the array is sorted, providing true for isSorted will use a faster algorithm. 
@@ -1081,10 +964,8 @@ declare module _ {
 				array: List<T>,
 				isSorted: boolean,
 				whereValue?: T): T[];
-	}
 
 	//_.without
-	interface LoDashStatic {
 		/**
 		* Creates an array excluding all provided values using strict equality for comparisons, i.e. ===.
 		* @param array The array to filter.
@@ -1094,10 +975,8 @@ declare module _ {
 		without<T>(
 			array: List<T>,
 			...values: T[]): T[];
-	}
 
 	//_.zip
-	interface LoDashStatic {
 		/**
 		* Creates an array of grouped elements, the first of which contains the first 
 		* elements of the given arrays, the second of which contains the second elements 
@@ -1121,10 +1000,8 @@ declare module _ {
 			* @see _.zip
 			**/
 			unzip(...arrays: any[]): any[];
-	}
 
 	//_.zipObject
-	interface LoDashStatic {
 		/**
 		* Creates an object composed from arrays of keys and values. Provide either a single 
 		* two dimensional array, i.e. [[key1, value1], [key2, value2]] or two arrays, one of 
@@ -1143,14 +1020,12 @@ declare module _ {
 			object<TResult>(
 				keys: List<string>,
 				values: List<any>): TResult;
-	}
 
 	/* *************
 	 * Collections *
 	 ************* */
 
 	//_.at
-	interface LoDashStatic {
 		/**
 		* Creates an array of elements from the specified indexes, or keys, of the collection. 
 		* Indexes may be specified as individual arguments or as arrays of indexes.
@@ -1169,10 +1044,8 @@ declare module _ {
 		at<T>(
 			collection: Collection<T>,
 			...indexes: number[]): T[];
-	}
 
 	//_.contains
-	interface LoDashStatic {
 		/**
 		* Checks if a given value is present in a collection using strict equality for comparisons, 
 		* i.e. ===. If fromIndex is negative, it is used as the offset from the end of the collection.
@@ -1229,10 +1102,8 @@ declare module _ {
 				searchString: string,
 				targetString: string,
 				fromIndex?: number): boolean;
-	}
 
 	//_.countBy
-	interface LoDashStatic {
 		/**
 		* Creates an object composed of keys generated from the results of running each element 
 		* of collection through the callback. The corresponding value of each key is the number 
@@ -1262,27 +1133,8 @@ declare module _ {
 			collection: Collection<T>,
 			callback: string,
 			thisArg?: any): Dictionary<number>;			
-	}
-
-	interface LoDashArrayWrapper<T> {
-		/**
-		* @see _.countBy
-		**/
-		countBy<T>(
-			callback?: ListIterator<T, any>,
-			thisArg?: any): LoDashObjectWrapper<Dictionary<number>>;
-
-		/**
-		* @see _.countBy
-		* @param callback Function name
-		**/
-		countBy<T>(
-			callback: string,
-			thisArg?: any): LoDashObjectWrapper<Dictionary<number>>;
-	}
 
 	//_.every
-	interface LoDashStatic {
 		/**
 		* Checks if the given callback returns truey value for all elements of a collection. 
 		* The callback is bound to thisArg and invoked with three arguments; (value, index|key, 
@@ -1342,10 +1194,8 @@ declare module _ {
 			all<T>(
 				collection: Collection<T>,
 				whereValue: T): boolean;
-	}
 
 	//_.filter
-	interface LoDashStatic {
 		/**
 		* Iterates over elements of a collection, returning an array of all elements the 
 		* callback returns truey for. The callback is bound to thisArg and invoked with three 
@@ -1405,54 +1255,8 @@ declare module _ {
 			select<T>(
 				collection: Collection<T>,
 				whereValue: T): T[];
-	}
-
-	interface LoDashArrayWrapper<T> {
-		/**
-		* @see _.filter
-		**/
-		filter<T>(
-			callback: ListIterator<T, boolean>,
-			thisArg?: any): LoDashArrayWrapper<T>;
-
-		/**
-		* @see _.filter
-		* @param pluckValue _.pluck style callback
-		**/
-		filter<T>(
-			pluckValue: string): LoDashArrayWrapper<T>;
-
-		/**
-		* @see _.filter
-		* @param pluckValue _.pluck style callback
-		**/
-		filter<T>(
-			whereValue: T): LoDashArrayWrapper<T>;
-
-			/**
-			* @see _.filter
-			**/
-			select<T>(
-				callback: ListIterator<T, boolean>,
-				thisArg?: any): LoDashArrayWrapper<T>;
-
-			/**
-			* @see _.filter
-			* @param pluckValue _.pluck style callback
-			**/
-			select<T>(
-				pluckValue: string): LoDashArrayWrapper<T>;
-
-			/**
-			* @see _.filter
-			* @param pluckValue _.pluck style callback
-			**/
-			select<T>(
-				whereValue: T): LoDashArrayWrapper<T>;
-	}
 
 	//_.find
-	interface LoDashStatic {
 		/**
 		* Iterates over elements of a collection, returning the first element that the callback 
 		* returns truey for. The callback is bound to thisArg and invoked with three arguments; 
@@ -1536,10 +1340,8 @@ declare module _ {
 			findWhere<T>(
 				collection: Collection<T>,
 				pluckValue: string): T;
-	}
 
 	//_.findLast
-	interface LoDashStatic {
 		/**
 		* This method is like _.find except that it iterates over elements of a collection from 
 		* right to left.
@@ -1568,10 +1370,8 @@ declare module _ {
 		findLast<T>(
 			collection: Collection<T>,
 			pluckValue: string): T;
-	}
 
 	//_.forEach
-	interface LoDashStatic {
 		/**
 		* Iterates over elements of a collection, executing the callback for each element. 
 		* The callback is bound to thisArg and invoked with three arguments; (value, index|key, 
@@ -1611,42 +1411,8 @@ declare module _ {
 				object: Dictionary<T>,
 				callback: ObjectIterator<T, void>,
 				thisArg?: any): Dictionary<T>;			
-	}
-
-	interface LoDashArrayWrapper<T> {
-		/**
-		* @see _.forEach
-		**/
-		forEach<T>(
-			callback: ListIterator<T, void >,
-			thisArg?: any): LoDashArrayWrapper<T>;
-
-			/**
-			* @see _.forEach
-			**/
-			each<T>(
-				callback: ListIterator<T, void >,
-				thisArg?: any): LoDashArrayWrapper<T>;
-	}
-
-	interface LoDashObjectWrapper<T> {
-		/**
-		* @see _.forEach
-		**/
-		forEach<T>(
-			callback: ObjectIterator<T, void >,
-			thisArg?: any): LoDashObjectWrapper<T>;
-
-			/**
-			* @see _.forEach
-			**/
-			each<T>(
-				callback: ObjectIterator<T, void >,	
-				thisArg?: any): LoDashObjectWrapper<T>;
-	}
 
 	//_.forEachRight
-	interface LoDashStatic {
 		/**
 		* This method is like _.forEach except that it iterates over elements of a 
 		* collection from right to left.
@@ -1685,45 +1451,8 @@ declare module _ {
 				object: Dictionary<T>,
 				callback: ObjectIterator<T, void>,
 				thisArg?: any): Dictionary<T>;
-	}
-
-	interface LoDashArrayWrapper<T> {
-		/**
-		* @see _.forEachRight
-		**/
-		forEachRight<T>(
-			callback: ListIterator<T, void >,
-			thisArg?: any): LoDashArrayWrapper<T>;
-
-			/**
-			* @see _.forEachRight
-			**/
-			eachRight<T>(
-				callback: ListIterator<T, void >,
-				thisArg?: any): LoDashArrayWrapper<T>;
-	}
-
-	interface LoDashObjectWrapper<T> {
-		/**
-		* @see _.forEachRight
-		**/
-		forEachRight<T>(
-			callback: ObjectIterator<T, void >,
-			thisArg?: any): LoDashObjectWrapper<Dictionary<T>>;
-
-			/**
-			* @see _.forEachRight
-			* @param object The object to iterate over
-			* @param callback The function called per iteration.
-			* @param thisArg The this binding of callback.
-			**/
-			eachRight<T>(
-				callback: ObjectIterator<T, void>,
-				thisArg?: any): LoDashObjectWrapper<Dictionary<T>>;
-	}
 
 	//_.groupBy
-	interface LoDashStatic {
 		/**
 		* Creates an object composed of keys generated from the results of running each element 
 		* of a collection through the callback. The corresponding value of each key is an array 
@@ -1759,31 +1488,8 @@ declare module _ {
 		groupBy<T>(
 			collection: List<T>,
 			whereValue: T): Dictionary<T[]>;
-	}
-
-    interface LoDashArrayWrapper<T> {
-		/**
-		* @see _.groupBy
-		**/
-		groupBy<T>(
-			callback: ListIterator<T, any>,
-			thisArg?: any): _.LoDashObjectWrapper<Dictionary<T[]>>;
-
-		/**
-		* @see _.groupBy
-		**/
-		groupBy<T>(
-			pluckValue: string): _.LoDashObjectWrapper<Dictionary<T[]>>;
-
-		/**
-		* @see _.groupBy
-		**/
-		groupBy<T>(
-			whereValue: T): _.LoDashObjectWrapper<Dictionary<T[]>>;
-	}
 
 	//_.indexBy
-	interface LoDashStatic {
 		/**
 		* Creates an object composed of keys generated from the results of running each element 
 		* of the collection through the given callback. The corresponding value of each key is 
@@ -1820,10 +1526,8 @@ declare module _ {
 		indexBy<T>(
 			collection: List<T>,
 			whereValue: T): Dictionary<T>;
-	}
 
 	//_.invoke
-	interface LoDashStatic {
 		/**
 		* Invokes the method named by methodName on each element in the collection returning 
 		* an array of the results of each invoked method. Additional arguments will be provided 
@@ -1845,10 +1549,8 @@ declare module _ {
 			collection: Collection<T>,
 			method: Function,
 			...args: any[]): any;
-	}
 
 	//_.map
-	interface LoDashStatic {
 		/**
 		* Creates an array of values by running each element in the collection through the callback. 
 		* The callback is bound to thisArg and invoked with three arguments; (value, index|key, 
@@ -1911,55 +1613,8 @@ declare module _ {
 			collect<T, TResult>(
 				collection: List<T>,
 				pluckValue: string): TResult[];
-	}
-
-	interface LoDashArrayWrapper<T> {
-		/**
-		* @see _.map
-		**/
-		map<T, TResult>(
-			callback: ListIterator<T, TResult>,
-			thisArg?: any): LoDashArrayWrapper<TResult>;
-
-		/**
-		* @see _.map
-		* @param pluckValue _.pluck style callback
-		**/
-		map<T, TResult>(
-			pluckValue: string): LoDashArrayWrapper<TResult>;
-
-			/**
-			* @see _.map
-			**/
-			collect<T, TResult>(
-				callback: ListIterator<T, TResult>,
-				thisArg?: any): LoDashArrayWrapper<TResult>;
-
-			/**
-			* @see _.map
-			**/
-			collect<T, TResult>(
-				pluckValue: string): LoDashArrayWrapper<TResult>;
-	}
-
-	interface LoDashObjectWrapper<T> {
-		/**
-		* @see _.map
-		**/
-		map<T, TResult>(
-			callback: ObjectIterator<T, TResult>,
-			thisArg?: any): LoDashObjectWrapper<TResult>;
-
-			/**
-			* @see _.map
-			**/
-			collect<T, TResult>(
-				callback: ObjectIterator<T, TResult>,
-				thisArg?: any): LoDashObjectWrapper<TResult>;
-	}
 
 	//_.max
-	interface LoDashStatic {
 		/**
 		* Retrieves the maximum value of a collection. If the collection is empty or falsey -Infinity is 
 		* returned. If a callback is provided it will be executed for each value in the collection to 
@@ -1996,10 +1651,8 @@ declare module _ {
 		max<T>(
 			collection: Collection<T>,
 			whereValue: T): T;
-	}
 
 	//_.min
-	interface LoDashStatic {
 		/**
 		* Retrieves the minimum value of a collection. If the collection is empty or falsey 
 		* Infinity is returned. If a callback is provided it will be executed for each value 
@@ -2036,10 +1689,8 @@ declare module _ {
 		min<T>(
 			collection: Collection<T>,
 			whereValue: T): T;
-	}
 
 	//_.pluck
-	interface LoDashStatic {
 		/**
 		* Retrieves the value of a specified property from all elements in the collection.
 		* @param collection The collection to iterate over.
@@ -2049,10 +1700,8 @@ declare module _ {
 		pluck<T>(
 			collection: Collection<T>,
 			property: string): any[];
-	}
 
 	//_.reduce
-	interface LoDashStatic {
 		/**
 		* Reduces a collection to a value which is the accumulated result of running each 
 		* element in the collection through the callback, where each successive callback execution 
@@ -2112,10 +1761,8 @@ declare module _ {
 				collection: Collection<T>,
 				callback: MemoIterator<T, TResult>,
 				thisArg?: any): TResult;
-	}
 
 	//_.reduceRight
-	interface LoDashStatic {
 		/**
 		* This method is like _.reduce except that it iterates over elements of a collection from 
 		* right to left.
@@ -2155,10 +1802,8 @@ declare module _ {
 				collection: Collection<T>,
 				callback: MemoIterator<T, TResult>,
 				thisArg?: any): TResult;
-	}
 
 	//_.reject
-	interface LoDashStatic {
 		/**
 		* The opposite of _.filter this method returns the elements of a collection that 
 		* the callback does not return truey for.
@@ -2193,10 +1838,8 @@ declare module _ {
 		reject<T>(
 			collection: Collection<T>,
 			whereValue: T): T[];
-	}
 
 	//_.sample
-	interface LoDashStatic {
 		/**
 		* Retrieves a random element or n random elements from a collection.
 		* @param collection The collection to sample.
@@ -2209,10 +1852,8 @@ declare module _ {
 		* @param n The number of elements to sample.
 		**/
 		sample<T>(collection: Collection<T>, n: number): T[];
-	}
 
 	//_.shuffle
-	interface LoDashStatic {
 		/**
 		* Creates an array of shuffled values, using a version of the Fisher-Yates shuffle. 
 		* See http://en.wikipedia.org/wiki/Fisher-Yates_shuffle.
@@ -2220,10 +1861,8 @@ declare module _ {
 		* @return Returns a new shuffled collection.
 		**/
 		shuffle<T>(collection: Collection<T>): T[];
-	}
 
 	//_.size
-	interface LoDashStatic {
 		/**
 		* Gets the size of the collection by returning collection.length for arrays and array-like 
 		* objects or the number of own enumerable properties for objects.
@@ -2245,10 +1884,8 @@ declare module _ {
 		* @return The length of aString
 		**/
 		size(aString: string): number;
-	}
 
 	//_.some
-	interface LoDashStatic {
 		/**
 		* Checks if the callback returns a truey value for any element of a collection. The function 
 		* returns as soon as it finds a passing value and does not iterate over the entire collection. 
@@ -2308,10 +1945,8 @@ declare module _ {
 			any<T>(
 				collection: Collection<T>,
 				whereValue: T): boolean;
-	}
 
 	//_.sortBy
-	interface LoDashStatic {
 		/**
 		* Creates an array of elements, sorted in ascending order by the results of running each 
 		* element in a collection through the callback. This method performs a stable sort, that 
@@ -2348,20 +1983,16 @@ declare module _ {
 		sortBy<T>(
 			collection: List<T>,
 			whereValue: T): T[];
-	}
 
 	//_.toArray
-	interface LoDashStatic {
 		/**
 		* Converts the collection to an array.
 		* @param collection The collection to convert.
 		* @return The new converted array.
 		**/
 		toArray<T>(collection: Collection<T>): T[];
-	}
 
 	//_.where
-	interface LoDashStatic {
 		/**
 		* Performs a deep comparison of each element in a collection to the given properties 
 		* object, returning an array of all elements that have equivalent property values.
@@ -2372,14 +2003,12 @@ declare module _ {
 		where<T, U>(
 			list: Collection<T>,
 			properties: U): T[];
-	}
 
 	/*************
 	 * Functions *
 	 *************/
 
 	//_.after
-	interface LoDashStatic {
 		/**
 		* Creates a function that executes func, with the this binding and arguments of the 
 		* created function, only after being called n times.
@@ -2390,17 +2019,8 @@ declare module _ {
 		after(
 			n: number,
 			func: Function): Function;			
-	}
-
-	interface LoDashWrapper<T> {
-		/**
-		* @see _.after
-		**/
-		after(func: Function): LoDashObjectWrapper<Function>;
-	}
 
 	//_.bind
-	interface LoDashStatic {
 		/**
 		* Creates a function that, when called, invokes func with the this binding of thisArg 
 		* and prepends any additional bind arguments to those provided to the bound function.
@@ -2413,19 +2033,8 @@ declare module _ {
 			func: Function,
 			thisArg: any,
 			...args: any[]): () => any;			
-	}
-
-	interface LoDashObjectWrapper<T> {
-		/**
-		* @see _.bind
-		**/
-		bind(
-			thisArg: any,
-			...args: any[]): LoDashObjectWrapper<() => any>;
-	}
 
 	//_.bindAll
-	interface LoDashStatic {
 		/**
 		* Binds methods of an object to the object itself, overwriting the existing method. Method 
 		* names may be specified as individual arguments or as arrays of method names. If no method 
@@ -2438,17 +2047,8 @@ declare module _ {
 		bindAll<T>(
 			object: T,
 			...methodNames: string[]): T;			
-	}
-
-	interface LoDashObjectWrapper<T> {
-		/**
-		* @see _.bindAll
-		**/
-		bindAll<T>(...methodNames: string[]): LoDashWrapper<T>;
-	}
 
 	//_.bindKey
-	interface LoDashStatic {
 		/**
 		* Creates a function that, when called, invokes the method at object[key] and prepends any 
 		* additional bindKey arguments to those provided to the bound function. This method differs 
@@ -2463,19 +2063,8 @@ declare module _ {
 			object: T,
 			key: string,
 			...args: any[]): Function;			
-	}
-
-	interface LoDashObjectWrapper<T> {
-		/**
-		* @see _.bindKey
-		**/
-		bindKey(
-			key: string,
-			...args: any[]): LoDashObjectWrapper<Function>;
-	}
 
 	//_.compose
-	interface LoDashStatic {
 		/**
 		* Creates a function that is the composition of the provided functions, where each function 
 		* consumes the return value of the function that follows. For example, composing the functions 
@@ -2485,17 +2074,8 @@ declare module _ {
 		* @return The new composed function.
 		**/
 		compose(...funcs: Function[]): Function;	
-	}
-
-	interface LoDashObjectWrapper<T> {
-		/**
-		* @see _.compose
-		**/
-		compose(...funcs: Function[]): LoDashObjectWrapper<Function>;
-	}
 
 	//_.createCallback
-	interface LoDashStatic {
 		/**
 		* Produces a callback bound to an optional thisArg. If func is a property name the created 
 		* callback will return the property value for a given element. If func is an object the created 
@@ -2518,28 +2098,8 @@ declare module _ {
 			func: Dictionary<any>,
 			thisArg?: any,
 			argCount?: number): () => boolean;			
-	}
-
-	interface LoDashWrapper<T> {
-		/**
-		* @see _.createCallback
-		**/
-		createCallback(
-			thisArg?: any,
-			argCount?: number): LoDashObjectWrapper<() => any>;
-	}
-
-	interface LoDashObjectWrapper<T> {
-		/**
-		* @see _.createCallback
-		**/
-		createCallback(
-			thisArg?: any,
-			argCount?: number): LoDashObjectWrapper<() => any>;
-	}
 
 	//_.curry
-	interface LoDashStatic {
 		/**
 		* Creates a function which accepts one or more arguments of func that when invoked either 
 		* executes func returning its result, if all func arguments have been provided, or returns 
@@ -2552,17 +2112,8 @@ declare module _ {
 		curry(
 			func: Function,
 			arity?: number): Function;	
-	}
-
-	interface LoDashObjectWrapper<T> {
-		/**
-		* @see _.curry
-		**/
-		curry(arity?: number): LoDashObjectWrapper<Function>;
-	}
 
 	//_.debounce
-	interface LoDashStatic {
 		/**
 		* Creates a function that will delay the execution of func until after wait milliseconds have 
 		* elapsed since the last time it was invoked. Provide an options object to indicate that func 
@@ -2586,15 +2137,6 @@ declare module _ {
 			options?: DebounceSettings): T;			
 	}
 
-	interface LoDashObjectWrapper<T> {
-		/**
-		* @see _.debounce
-		**/
-		debounce(
-			wait: number,
-			options?: DebounceSettings): LoDashObjectWrapper<Function>;
-	}
-
 	interface DebounceSettings {
 		/**
 		* Specify execution on the leading edge of the timeout.
@@ -2610,10 +2152,8 @@ declare module _ {
 		* Specify execution on the trailing edge of the timeout.
 		**/
 		trailing?: boolean;
-	}
 
 	//_.defer
-	interface LoDashStatic {
 		/**
 		* Defers executing the func function until the current call stack has cleared. Additional 
 		* arguments will be provided to func when it is invoked.
@@ -2624,17 +2164,8 @@ declare module _ {
 		defer(
 			func: Function,
 			...args: any[]): number;			
-	}
-
-	interface LoDashObjectWrapper<T> {
-		/**
-		* @see _.defer
-		**/
-		defer(...args: any[]): LoDashWrapper<number>;
-	}
 
 	//_.delay
-	interface LoDashStatic {
 		/**
 		* Executes the func function after wait milliseconds. Additional arguments will be provided 
 		* to func when it is invoked.
@@ -2647,19 +2178,8 @@ declare module _ {
 			func: Function,
 			wait: number,
 			...args: any[]): number;			
-	}
-
-	interface LoDashObjectWrapper<T> {
-		/**
-		* @see _.delay
-		**/
-		delay(
-			wait: number,
-			...args: any[]): LoDashWrapper<number>;
-	}
 
 	//_.memoize
-	interface LoDashStatic {
 		/**
 		* Creates a function that memoizes the result of func. If resolver is provided it will be 
 		* used to determine the cache key for storing the result based on the arguments provided to 
@@ -2673,10 +2193,8 @@ declare module _ {
         memoize<T extends Function>(
 			func: T,
 			resolver?: Function): T;
-	}
 
 	//_.once
-	interface LoDashStatic {
 		/**
 		* Creates a function that is restricted to execute func once. Repeat calls to the function 
 		* will return the value of the first call. The func is executed with the this binding of the 
@@ -2685,10 +2203,8 @@ declare module _ {
 		* @return The new restricted function.
 		**/
         once<T extends Function>(func: T): T;
-	}
 
 	//_.partial
-	interface LoDashStatic {
 		/**
 		* Creates a function that, when called, invokes func with any additional partial arguments 
 		* prepended to those provided to the new function. This method is similar to _.bind except 
@@ -2700,10 +2216,8 @@ declare module _ {
 		partial(
 			func: Function,
 			...args: any[]): Function;
-	}
 
 	//_.partialRight
-	interface LoDashStatic {
 		/**
 		* This method is like _.partial except that partial arguments are appended to those provided 
 		* to the new function.
@@ -2714,10 +2228,8 @@ declare module _ {
 		partialRight(
 			func: Function,
 			...args: any[]): Function;
-	}
 
 	//_.throttle
-	interface LoDashStatic {
 		/**
 		* Creates a function that, when executed, will only call the func function at most once per 
 		* every wait milliseconds. Provide an options object to indicate that func should be invoked 
@@ -2737,23 +2249,8 @@ declare module _ {
 			func: T,
 			wait: number,
 			options?: ThrottleSettings): T;
-	}
-
-	interface ThrottleSettings {
-
-		/**
-		* If you'd like to disable the leading-edge call, pass this as false.
-		**/
-		leading?: boolean;
-
-		/**
-		* If you'd like to disable the execution on the trailing-edge, pass false.
-		**/
-		trailing?: boolean;
-	}
 
 	//_.wrap
-	interface LoDashStatic {
 		/**
 		* Creates a function that provides value to the wrapper function as its first argument. 
 		* Additional arguments provided to the function are appended to those provided to the 
@@ -2765,14 +2262,12 @@ declare module _ {
 		wrap(
 			value: any,
 			wrapper: (func: Function, ...args: any[]) => any): Function;
-	}
 
 	/*************
 	 * Objects   *
 	 *************/
 
 	//_.assign
-	interface LoDashStatic {
 		/**
 		* Assigns own enumerable properties of source object(s) to the destination object. Subsequent 
 		* sources will overwrite property assignments of previous sources. If a callback is provided 
@@ -2864,107 +2359,9 @@ declare module _ {
                 s4: T,
                 callback?: (objectValue: Value, sourceValue: Value) => Value,
                 thisArg?: any): T;
-	}
 
-	interface LoDashObjectWrapper<T> {
-		/**
-		* @see _.assign
-		**/
-		assign<S1, Value, TResult>(
-			s1: S1,
-			callback?: (objectValue: Value, sourceValue: Value) => Value,
-			thisArg?: any): TResult;
-
-		/**
-		* @see _.assign
-		**/
-		assign<S1, S2, Value, TResult>(
-			s1: S1,
-			s2: S2,
-			callback?: (objectValue: Value, sourceValue: Value) => Value,
-			thisArg?: any): TResult;
-		/**
-		* @see _.assign
-		**/
-		assign<S1, S2, S3, Value, TResult>(
-			s1: S1,
-			s2: S2,
-			s3: S3,
-			callback?: (objectValue: Value, sourceValue: Value) => Value,
-			thisArg?: any): TResult;
-		/**
-		* @see _.assign
-		**/
-		assign<S1, S2, S3, S4, Value, TResult>(
-			s1: S1,
-			s2: S2,
-			s3: S3,
-			s4: S4,
-			callback?: (objectValue: Value, sourceValue: Value) => Value,
-			thisArg?: any): TResult;
-		/**
-		* @see _.assign
-		**/
-		assign<S1, S2, S3, S4, S5, Value, TResult>(
-			s1: S1,
-			s2: S2,
-			s3: S3,
-			s4: S4,
-			s5: S5,
-			callback?: (objectValue: Value, sourceValue: Value) => Value,
-			thisArg?: any): TResult;
-
-          /**
-          * @see _.assign
-          **/
-          extend<S1, Value, TResult>(
-              s1: S1,
-              callback?: (objectValue: Value, sourceValue: Value) => Value,
-              thisArg?: any): TResult;
-
-          /**
-          * @see _.assign
-          **/
-          extend<S1, S2, Value, TResult>(
-              s1: S1,
-              s2: S2,
-              callback?: (objectValue: Value, sourceValue: Value) => Value,
-              thisArg?: any): TResult;
-          /**
-          * @see _.assign
-          **/
-          extend<S1, S2, S3, Value, TResult>(
-              s1: S1,
-              s2: S2,
-              s3: S3,
-              callback?: (objectValue: Value, sourceValue: Value) => Value,
-              thisArg?: any): TResult;
-          /**
-          * @see _.assign
-          **/
-          extend<S1, S2, S3, S4, Value, TResult>(
-              s1: S1,
-              s2: S2,
-              s3: S3,
-              s4: S4,
-              callback?: (objectValue: Value, sourceValue: Value) => Value,
-              thisArg?: any): TResult;
-          /**
-          * @see _.assign
-          **/
-          extend<S1, S2, S3, S4, S5, Value, TResult>(
-              s1: S1,
-              s2: S2,
-              s3: S3,
-              s4: S4,
-              s5: S5,
-              callback?: (objectValue: Value, sourceValue: Value) => Value,
-              thisArg?: any): TResult;
-
-	}
 
 	//_.clone
-	interface LoDashStatic {
 		/**
 		* Creates a clone of value. If deep is true nested objects will also be cloned, otherwise 
 		* they will be assigned by reference. If a callback is provided it will be executed to produce 
@@ -2981,10 +2378,8 @@ declare module _ {
 			deep?: boolean,
 			callback?: (value: any) => any,
 			thisArg?: any): T;
-	}
 
 	//_.cloneDeep
-	interface LoDashStatic {
 		/**
 		* Creates a deep clone of value. If a callback is provided it will be executed to produce the 
 		* cloned values. If the callback returns undefined cloning will be handled by the method instead. 
@@ -3003,10 +2398,8 @@ declare module _ {
 			value: T,
 			callback?: (value: any) => any,
 			thisArg?: any): T;
-	}
 
 	//_.defaults
-	interface LoDashStatic {
 		/**
 		* Assigns own enumerable properties of source object(s) to the destination object for all 
 		* destination properties that resolve to undefined. Once a property is set, additional defaults 
@@ -3018,17 +2411,8 @@ declare module _ {
 		defaults<T, TResult>(
 			object: T,
 			...sources: any[]): TResult;	
-	}
-
-	interface LoDashObjectWrapper<T> {
-		/**
-		* @see _.defaults
-		**/
-		defaults<T, TResult>(...sources: any[]): LoDashObjectWrapper<TResult>
-	}
 
 	//_.findKey
-	interface LoDashStatic {
 		/**
 		* This method is like _.findIndex except that it returns the key of the first element that 
 		* passes the callback check, instead of the element itself.
@@ -3057,10 +2441,8 @@ declare module _ {
         findKey<T extends Dictionary<any>>(
 			object: T,
 			whereValue: T): string;
-	}
 
 	//_.findLastKey
-	interface LoDashStatic {
 		/**
 		* This method is like _.findKey except that it iterates over elements of a collection in the opposite order.
 		* @param object The object to search.
@@ -3088,10 +2470,8 @@ declare module _ {
         findLastKey<T extends Dictionary<any>>(
 			object: T,
 			whereValue: T): string;
-	}
 
 	//_.forIn
-	interface LoDashStatic {
 		/**
 		* Iterates over own and inherited enumerable properties of an object, executing the callback for 
 		* each property. The callback is bound to thisArg and invoked with three arguments; (value, key, 
@@ -3105,19 +2485,8 @@ declare module _ {
 			object: Dictionary<T>,
 			callback?: ObjectIterator<T, void>,
 			thisArg?: any): Dictionary<T>;
-	}
-
-	interface LoDashObjectWrapper {
-		/**
-		* @see _.forIn
-		**/
-		forIn<T>(
-			callback: ObjectIterator<T, void>,
-			thisArg?: any): _.LoDashObjectWrapper<T>;
-	}
 
 	//_.forInRight
-	interface LoDashStatic {
 		/**
 		* This method is like _.forIn except that it iterates over elements of a collection in the 
 		* opposite order.
@@ -3130,19 +2499,8 @@ declare module _ {
 			object: Dictionary<T>,
 			callback?: ObjectIterator<T, void>,
 			thisArg?: any): Dictionary<T>;
-	}
-
-	interface LoDashObjectWrapper {
-		/**
-		* @see _.forInRight
-		**/
-		forInRight<T>(
-			callback: ObjectIterator<T, void>,
-			thisArg?: any): _.LoDashObjectWrapper<T>;
-	}
 
 	//_.forOwn
-	interface LoDashStatic {
 		/**
 		* Iterates over own enumerable properties of an object, executing the callback for each 
 		* property. The callback is bound to thisArg and invoked with three arguments; (value, key, 
@@ -3156,19 +2514,8 @@ declare module _ {
 			object: Dictionary<T>,
 			callback?: ObjectIterator<T, void>,
 			thisArg?: any): Dictionary<T>;
-	}
-
-	interface LoDashObjectWrapper {
-		/**
-		* @see _.forOwn
-		**/
-		forOwn<T>(
-			callback: ObjectIterator<T, void>,
-			thisArg?: any): _.LoDashObjectWrapper<T>;
-	}
 
 	//_.forOwnRight
-	interface LoDashStatic {
 		/**
 		* This method is like _.forOwn except that it iterates over elements of a collection in the 
 		* opposite order.
@@ -3181,19 +2528,8 @@ declare module _ {
 			object: Dictionary<T>,
 			callback?: ObjectIterator<T, void>,
 			thisArg?: any): Dictionary<T>;
-	}
-
-	interface LoDashObjectWrapper {
-		/**
-		* @see _.forOwnRight
-		**/
-		forOwnRight<T>(
-			callback: ObjectIterator<T, void>,
-			thisArg?: any): _.LoDashObjectWrapper<T>;
-	}
 
 	//_.functions
-	interface LoDashStatic {
 		/**
 		* Creates a sorted array of property names of all enumerable properties, own and inherited, of 
 		* object that have function values.
@@ -3206,22 +2542,8 @@ declare module _ {
 			* @see _functions
 			**/
 			methods(object: any): string[];
-	}
-
-	interface LoDashObjectWrapper {
-		/**
-		* @see _.functions
-		**/
-		functions(): _.LoDashArrayWrapper<string>;
-
-			/**
-			* @see _.functions
-			**/
-			methods(): _.LoDashArrayWrapper<string>;
-	}
 
 	//_.has
-	interface LoDashStatic {
 		/**
 		* Checks if the specified object property exists and is a direct property, instead of an 
 		* inherited property.
@@ -3230,70 +2552,56 @@ declare module _ {
 		* @return True if key is a direct property, else false.
 		**/
 		has(object: any, property: string): boolean;
-	}
 
 	//_.invert
-	interface LoDashStatic {
 		/**
 		* Creates an object composed of the inverted keys and values of the given object.
 		* @param object The object to invert.
 		* @return The created inverted object.
 		**/
 		invert(object: any): any;
-	}
 
 	//_.isArguments
-	interface LoDashStatic {
 		/**
 		* Checks if value is an arguments object.
 		* @param value The value to check.
 		* @return True if the value is an arguments object, else false.
 		**/
 		isArguments(value: any): boolean;
-	}
 
 	//_.isArray
-	interface LoDashStatic {
 		/**
 		* Checks if value is an array.
 		* @param value The value to check.
 		* @return True if the value is an array, else false.
 		**/
 		isArray(value: any): boolean;
-	}
 
 	//_.isBoolean
-	interface LoDashStatic {
 		/**
 		* Checks if value is a boolean value.
 		* @param value The value to check.
 		* @return True if the value is a boolean value, else false.
 		**/
 		isBoolean(value: any): boolean;
-	}
 
 	//_.isDate
-	interface LoDashStatic {
 		/**
 		* Checks if value is a date.
 		* @param value The value to check.
 		* @return True if the value is a date, else false.
 		**/
 		isDate(value: any): boolean;
-	}
 
 	//_.isElement
-	interface LoDashStatic {
 		/**
 		* Checks if value is a DOM element.
 		* @param value The value to check.
 		* @return True if the value is a DOM element, else false.
 		**/
 		isElement(value: any): boolean;
-	}
 
 	//_.isEmpty
-	interface LoDashStatic {
 		/**
 		* Checks if value is empty. Arrays, strings, or arguments objects with a length of 0 and objects 
 		* with no own enumerable properties are considered "empty".
@@ -3316,10 +2624,8 @@ declare module _ {
 		* @see _.isEmpty
 		**/
 		isEmpty(value: any): boolean;
-	}
 
 	//_.isEqual
-	interface LoDashStatic {
 		/**
 		* Performs a deep comparison between two values to determine if they are equivalent to each 
 		* other. If a callback is provided it will be executed to compare values. If the callback 
@@ -3336,10 +2642,8 @@ declare module _ {
 			b: any,
 			callback?: (a: any, b: any) => boolean,
 			thisArg?: any): boolean;
-	}
 
 	//_.isFinite
-	interface LoDashStatic {
 		/**
 		* Checks if value is, or can be coerced to, a finite number.
 		*
@@ -3349,20 +2653,16 @@ declare module _ {
 		* @return True if the value is finite, else false.
 		**/
 		isFinite(value: any): boolean;
-	}
 
 	//_.isFunction
-	interface LoDashStatic {
 		/**
 		* Checks if value is a function.
 		* @param value The value to check.
 		* @return True if the value is a function, else false.
 		**/
 		isFunction(value: any): boolean;
-	}
 
 	//_.isNaN
-	interface LoDashStatic {
 		/**
 		* Checks if value is NaN.
 		*
@@ -3372,20 +2672,16 @@ declare module _ {
 		* @return True if the value is NaN, else false.
 		**/
 		isNaN(value: any): boolean;
-	}
 
 	//_.isNull
-	interface LoDashStatic {
 		/**
 		* Checks if value is null.
 		* @param value The value to check.
 		* @return True if the value is null, else false.
 		**/
 		isNull(value: any): boolean;
-	}
 
 	//_.isNumber
-	interface LoDashStatic {
 		/**
 		* Checks if value is a number.
 		*
@@ -3394,10 +2690,8 @@ declare module _ {
 		* @return True if the value is a number, else false.
 		**/
 		isNumber(value: any): boolean;
-	}
 
 	//_.isObject
-	interface LoDashStatic {
 		/**
 		* Checks if value is the language type of Object. (e.g. arrays, functions, objects, regexes, 
 		* new Number(0), and new String(''))
@@ -3405,60 +2699,48 @@ declare module _ {
 		* @return True if the value is an object, else false.
 		**/
 		isObject(value: any): boolean;
-	}
 
 	//_.isPlainObject
-	interface LoDashStatic {
 		/**
 		* Checks if value is an object created by the Object constructor.
 		* @param value The value to check.
 		* @return True if value is a plain object, else false.
 		**/
 		isPlainObject(value: any): boolean;
-	}
 
 	//_.isRegExp
-	interface LoDashStatic {
 		/**
 		* Checks if value is a regular expression.
 		* @param value The value to check.
 		* @return True if the value is a regular expression, else false.
 		**/
 		isRegExp(value: any): boolean;
-	}
 
 	//_.isString
-	interface LoDashStatic {
 		/**
 		* Checks if value is a string.
 		* @param value The value to check.
 		* @return True if the value is a string, else false.
 		**/
 		isString(value: any): boolean;
-	}
 
 	//_.isUndefined
-	interface LoDashStatic {
 		/**
 		* Checks if value is undefined.
 		* @param value The value to check.
 		* @return True if the value is undefined, else false.
 		**/
 		isUndefined(value: any): boolean;
-	}
 
 	//_.keys
-	interface LoDashStatic {
 		/**
 		* Creates an array composed of the own enumerable property names of an object.
 		* @param object The object to inspect.
 		* @return An array of property names.
 		**/
 		keys(object: any): string[];
-	}
 
 	//_.merge
-	interface LoDashStatic {
 		/**
 		* Recursively merges own enumerable properties of the source object(s), that don't resolve 
 		* to undefined into the destination object. Subsequent sources will overwrite property 
@@ -3510,10 +2792,8 @@ declare module _ {
             s4: T,
 			callback?: (objectValue: Value, sourceValue: Value) => Value,
             thisArg?: any): T;
-	}
 
 	//_.omit
-	interface LoDashStatic {
 		/**
 		* Creates a shallow clone of object excluding the specified properties. Property names may be 
 		* specified as individual arguments or as arrays of property names. If a callback is provided 
@@ -3542,10 +2822,8 @@ declare module _ {
 			object: T,
 			callback: ObjectIterator<any, boolean>,
 			thisArg?: any): T;
-	}
 
 	//_.pairs
-	interface LoDashStatic {
 		/**
 		* Creates a two dimensional array of an object’s key-value pairs, 
 		* i.e. [[key1, value1], [key2, value2]].
@@ -3553,10 +2831,8 @@ declare module _ {
 		* @return Aew array of key-value pairs.
 		**/
 		pairs(object: any): any[][];
-	}
 
 	//_.picks
-	interface LoDashStatic {
 		/**
 		* Creates a shallow clone of object composed of the specified properties. Property names may be 
 		* specified as individual arguments or as arrays of property names. If a callback is provided 
@@ -3585,10 +2861,8 @@ declare module _ {
 			object: T,
 			callback: ObjectIterator<any, boolean>,
 			thisArg?: any): T;
-	}
 
 	//_.transform
-	interface LoDashStatic {
 		/**
 		* An alternative to _.reduce this method transforms object to a new accumulator object which is 
 		* the result of running each of its elements through a callback, with each callback execution 
@@ -3614,61 +2888,49 @@ declare module _ {
 			collection: Collection<T>,
 			callback?: MemoVoidIterator<T, Acc>,
 			thisArg?: any): Acc;
-	}
 
 	//_.values
-	interface LoDashStatic {
 		/**
 		* Creates an array composed of the own enumerable property values of object.
 		* @param object The object to inspect.
 		* @return Returns an array of property values.
 		**/
 		values(object: any): any[];
-	}
 
 	/*************
 	 * Utilities *
 	 *************/
 	//_.escape
-	interface LoDashStatic {
 		/**
 		* Converts the characters &, <, >, ", and ' in string to their corresponding HTML entities.
 		* @param string The string to escape.
 		* @return The escaped string.
 		**/
 		escape(str: string): string;
-	}
 
 	//_.identity
-	interface LoDashStatic {
 		/**
 		* This method returns the first argument provided to it.
 		* @param value Any value.
 		* @return value.
 		**/
 		identity<T>(value: T): T;
-	}
 
 	//_.mixin
-	interface LoDashStatic {
 		/**
 		* Adds function properties of a source object to the lodash function and chainable wrapper.
 		* @param object The object of function properties to add to lodash.
 		**/
 		mixin(object: Dictionary<(value: any) => any>): void;
-	}
 
 	//_.noConflict
-	interface LoDashStatic {
 		/**
 		* Reverts the '_' variable to its previous value and returns a reference to the lodash function.
 		* @return The lodash function.
 		**/
 		noConflict(): typeof _;
-	}
 
 	//_.parseInt
-	interface LoDashStatic {
 		/**
 		* Converts the given value into an integer of the specified radix. If radix is undefined or 0 a 
 		* radix of 10 is used unless the value is a hexadecimal, in which case a radix of 16 is used.
@@ -3680,10 +2942,8 @@ declare module _ {
 		* @return The new integer value.
 		**/
 		parseInt(value: string): number;
-	}
 
 	//_.random
-	interface LoDashStatic {
 		/**
 		* Produces a random number between min and max (inclusive). If only one argument is provided a 
 		* number between 0 and the given number will be returned. If floating is truey or either min or 
@@ -3700,10 +2960,8 @@ declare module _ {
 		* @return A random number between `min` and `max`.
 		**/
 		random(min: number, max: number, floating?: boolean): number;
-	}
 
 	//_.result
-	interface LoDashStatic {
 		/**
 		* Resolves the value of property on object. If property is a function it will be invoked with 
 		* the this binding of object and its result returned, else the property value is returned. If 
@@ -3713,20 +2971,16 @@ declare module _ {
 		* @return The resolved value.
 		**/
 		result(object: any, property: string): any;
-	}
 
 	//_.runInContext
-	interface LoDashStatic {
 		/**
 		* Create a new lodash function using the given context object.
 		* @param context The context object
 		* @returns The lodash function.
 		**/
 		runInContext(context: any): typeof _;
-	}
 
 	//_.template
-	interface LoDashStatic {
 		/**
 		* A micro-templating method that handles arbitrary delimiters, preserves whitespace, and 
 		* correctly escapes quotes within interpolated code.
@@ -3767,10 +3021,8 @@ declare module _ {
 	interface TemplateExecutor {
 		(...data: any[]): string;
 		source: string;
-	}
 		
 	//_.times
-	interface LoDashStatic {
 		/**
 		* Executes the callback n times, returning an array of the results of each callback execution. 
 		* The callback is bound to thisArg and invoked with one argument; (index).
@@ -3782,10 +3034,8 @@ declare module _ {
 			n: number, 
 			callback: (num: number) => TResult, 
 			context?: any): TResult[];
-	}
 
 	//_.unescape
-	interface LoDashStatic {
 		/**
 		* The inverse of _.escape this method converts the HTML entities &amp;, <, &gt;, &quot;, and 
 		* &#39; in string to their corresponding characters.
@@ -3794,10 +3044,8 @@ declare module _ {
 		**/
 		unescape(
 			string: string): string;
-	}
 
 	//_.uniqueId
-	interface LoDashStatic {
 		/**
 		* Generates a unique ID. If prefix is provided the ID will be appended to it.
 		* @param prefix The value to prefix the ID with.
@@ -3806,40 +3054,6 @@ declare module _ {
 		uniqueId(prefix?: string): string;
 	}
 
-	interface ListIterator<T, TResult> {
-		(value: T, index: number, list: T[]): TResult;
-	}
-
-	interface ObjectIterator<T, TResult> {
-		(element: T, key: string, list: any): TResult;
-	}
-
-	interface MemoVoidIterator<T, TResult> {
-		(prev: TResult, curr: T, indexOrKey: any, list?: T[]): void;
-	}
-	interface MemoIterator<T, TResult> {
-		(prev: TResult, curr: T, indexOrKey: any, list?: T[]): TResult;
-	}
-    /*
-	interface MemoListIterator<T, TResult> {
-		(prev: TResult, curr: T, index: number, list?: T[]): TResult;
-	}
-	interface MemoObjectIterator<T, TResult> {
-		(prev: TResult, curr: T, index: string, object?: Dictionary<T>): TResult;
-	}
-    */
-
-	interface Collection<T> { }
-
-	// Common interface between Arrays and jQuery objects
-	interface List<T> extends Collection<T> {
-		[index: number]: T;
-		length: number;
-	}
-
-	interface Dictionary<T> extends Collection<T> {
-		[index: string]: T;
-	}
 }
 
 declare module "lodash" {
