@@ -271,4 +271,4 @@ List of Definitions
 
 Requested Definitions
 ---------------------
-Here is an updated list of [definitions people have requested](https://github.com/borisyankov/DefinitelyTyped/issues?labels=Definition%3ARequest)
+Here is are the [currently requested definitions](https://github.com/borisyankov/DefinitelyTyped/labels/Definition%3ARequest).
